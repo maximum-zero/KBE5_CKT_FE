@@ -35,4 +35,11 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    files: ['src/styled-components.d.ts'],
+    rules: {
+      '@typescript-eslint/no-empty-interface': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
+    },
+  },
 );
