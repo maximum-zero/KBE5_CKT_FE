@@ -4,49 +4,117 @@ import { createGlobalStyle, css } from 'styled-components';
 import { createThemeCssVars } from './themes';
 
 const GlobalStyle = createGlobalStyle`
+  /* Pretendard 폰트 정의 */
+  @font-face {
+    font-family: 'Pretendard';
+    font-weight: 100;
+    font-display: swap;
+    src: local('Pretendard Thin'), url('/fonts/Pretendard-Thin.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Pretendard';
+    font-weight: 200;
+    font-display: swap;
+    src: local('Pretendard ExtraLight'), url('/fonts/Pretendard-ExtraLight.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Pretendard';
+    font-weight: 300;
+    font-display: swap;
+    src: local('Pretendard Light'), url('/fonts/Pretendard-Light.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Pretendard';
+    font-weight: 400;
+    font-display: swap;
+    src: local('Pretendard Regular'), url('/fonts/Pretendard-Regular.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Pretendard';
+    font-weight: 500;
+    font-display: swap;
+    src: local('Pretendard Medium'), url('/fonts/Pretendard-Medium.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Pretendard';
+    font-weight: 600;
+    font-display: swap;
+    src: local('Pretendard SemiBold'), url('/fonts/Pretendard-SemiBold.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Pretendard';
+    font-weight: 700;
+    font-display: swap;
+    src: local('Pretendard Bold'), url('/fonts/Pretendard-Bold.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Pretendard';
+    font-weight: 800;
+    font-display: swap;
+    src: local('Pretendard ExtraBold'), url('/fonts/Pretendard-ExtraBold.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Pretendard';
+    font-weight: 900;
+    font-display: swap;
+    src: local('Pretendard Black'), url('/fonts/Pretendard-Black.woff2') format('woff2');
+  }
+
   ${props => css`
     html {
       // 선택된 테마의 CSS 변수를 여기에 적용
       ${createThemeCssVars(props.theme)}
 
-      /* 폰트 설정 (웹 폰트 링크 또는 로컬 폰트 @font-face 이후에 적용) */
-      font-family: 'Noto Sans KR', sans-serif;
+      font-family: 'Pretendard', sans-serif;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      color: var(--color-text); /* CSS 변수를 통해 텍스트 색상 적용 */
-      background-color: var(--color-background); /* CSS 변수를 통해 배경 색상 적용 */
+      color: var(--color-gray900);
+      background-color: var(--color-gray200);
+
+      /* 기타 전역 스타일 */
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+
+      /* 최소 너비 설정 */
+      min-width: 1280px;
+
+      /* 화면 너비가 min-width보다 작아질 경우 가로 스크롤바 생성 */
+      overflow-x: auto;
+    }
+
+    html,
+    body {
+      overflow: auto; /* 또는 hidden, scroll */
+      /* WebKit (Chrome, Safari) */
+      &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+        background-color: transparent;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+      }
+      &:hover::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+      /* Firefox */
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+    }
+
+    /* 모든 요소에 box-sizing 적용 */
+    *,
+    *::before,
+    *::after {
+      box-sizing: inherit;
     }
   `}
-
-
-  /* 모든 요소에 box-sizing: border-box 적용 (매우 권장) */
-  *, *::before, *::after {
-    box-sizing: border-box;
-  }
-
-  /* 링크 기본 스타일 제거 (선택 사항) */
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  /* 버튼, 인풋 등 기본 스타일 제거 (선택 사항) */
-  button, input, select, textarea {
-    background: none;
-    border: none;
-    font: inherit;
-    color: inherit;
-    cursor: pointer;
-    outline: none; /* 접근성을 위해 :focus 스타일 고려 */
-  }
-
-  /* 이미지 기본 스타일 */
-  img, video {
-    max-width: 100%;
-    height: auto;
-    display: block; /* 인라인 요소의 기본 여백 제거 */
-  }
 `;
 
 export default GlobalStyle;

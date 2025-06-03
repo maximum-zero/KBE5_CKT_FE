@@ -1,41 +1,55 @@
 export interface CustomTheme {
   primary: string;
-  primaryHover: string;
-  background: string;
-  backgroundHover: string;
-  text: string;
-  placeholder: string;
-  border: string;
+  primaryDark: string;
+  primaryLight: string;
+  gray900: string;
+  gray800: string;
+  gray700: string;
+  gray600: string;
+  gray500: string;
+  gray400: string;
+  gray300: string;
+  gray200: string;
+  gray100: string;
+  white: string;
+  black: string;
 }
 
 // 공통 테마 속성
 const commonTheme = {
-  background: '#FFFFFF',
-  text: '#111111',
-  placeholder: '#94A3B8',
-  border: '#CBD5E1',
+  gray900: '#1E293B',
+  gray800: '#334155',
+  gray700: '#475569',
+  gray600: '#64748B',
+  gray500: '#94A3B8',
+  gray400: '#CBD5E1',
+  gray300: '#E2E8F0',
+  gray200: '#F5F7FA',
+  gray100: '#FCFEFF',
+  white: '#FFFFFF',
+  black: '#000000',
 };
 
 // 2. 개별 테마 객체 정의
 export const blueTheme: CustomTheme = {
   ...commonTheme,
-  primary: '#0070f3',
-  primaryHover: '#005bb5',
-  backgroundHover: '#f0f4f8',
+  primary: '#3B82F6',
+  primaryDark: '#3563e9',
+  primaryLight: '#EFF6FF',
 };
 
 export const pinkTheme: CustomTheme = {
   ...commonTheme,
-  primary: '#ff69b4',
-  primaryHover: '#d13f87',
-  backgroundHover: '#f7e2eb',
+  primary: '#FF69b4',
+  primaryDark: '#E659A2',
+  primaryLight: '#FFE0F0',
 };
 
 export const brownTheme: CustomTheme = {
   ...commonTheme,
   primary: '#8B4513',
-  primaryHover: '#6a340f',
-  backgroundHover: '#e0e0c8',
+  primaryDark: '#7A3D11',
+  primaryLight: '#D4BBA6',
 };
 
 // 3. 테마 맵 정의 (테마 선택을 위한)
