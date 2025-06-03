@@ -5,6 +5,8 @@ import { ThemeContextProvider, useTheme } from '@/context/ThemeContext';
 import GlobalStyle from '@/styles/GlobalStyle';
 import DashboardLayout from '@/layouts/DashboardLayout';
 
+import 'react-datepicker/dist/react-datepicker.css';
+
 // 페이지
 import LoginPage from '@/features/auth/LoginPage';
 
