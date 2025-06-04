@@ -13,6 +13,10 @@ export interface CustomTheme {
   gray100: string;
   white: string;
   black: string;
+  // Basic Color
+  green: string;
+  orange: string;
+  purple: string;
 }
 
 // 공통 테마 속성
@@ -28,6 +32,9 @@ const commonTheme = {
   gray100: '#FCFEFF',
   white: '#FFFFFF',
   black: '#000000',
+  green: '#10B981',
+  orange: '#EFA244',
+  purple: '#6366F1',
 };
 
 // 2. 개별 테마 객체 정의
