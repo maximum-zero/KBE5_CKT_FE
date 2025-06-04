@@ -12,10 +12,12 @@ export type StyledIconButtonProps = Omit<IconButtonProps, 'children' | 'icon' | 
 export interface BasicButtonProps extends React.ComponentPropsWithoutRef<'button'> {
   children: React.ReactNode;
   buttonType?: ButtonType;
+  width?: string;
 }
 
 export interface IconButtonProps extends React.ComponentPropsWithoutRef<'button'> {
   children: React.ReactNode;
   icon?: React.ReactNode;
   iconPosition?: IconPosition;
+  width?: string;
 }

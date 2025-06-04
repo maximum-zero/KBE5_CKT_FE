@@ -26,6 +26,8 @@ export const CommonButtonStyles = `
 export const StyledBasicButton = styled.button<StyledBasicButtonProps>`
   ${CommonButtonStyles}
 
+  width: ${props => props.width || 'auto'};
+
   /* 버튼 타입에 따른 컬러 스타일 */
   ${props => {
     switch (props.$buttonType) {
@@ -68,6 +70,7 @@ export const StyledBasicButton = styled.button<StyledBasicButtonProps>`
 // --- 아이콘 버튼 Styled Component ---
 export const StyledIconButton = styled.button<StyledIconButtonProps>`
   ${CommonButtonStyles}
+  width: ${props => props.width || 'auto'};
   background: var(--color-primary);
   color: var(--color-white);
 
