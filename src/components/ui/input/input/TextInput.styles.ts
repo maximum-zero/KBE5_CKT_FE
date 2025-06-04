@@ -73,7 +73,6 @@ export const StyledInput = styled.input`
   border: none;
   background: transparent;
   outline: none;
-  font-family: 'Noto Sans KR', sans-serif;
   font-size: 14px;
   line-height: 16.8px;
   color: var(--color-gray900);
