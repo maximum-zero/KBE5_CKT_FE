@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import type { StyledBasicButtonProps, StyledIconButtonProps } from './types';
+import styled, { css } from 'styled-components';
+import type { StyledActionButtonProps, StyledBasicButtonProps, StyledIconButtonProps } from './types';
 
 // --- 공통 버튼 스타일 ---
 export const CommonButtonStyles = `
@@ -32,23 +32,23 @@ export const StyledBasicButton = styled.button<StyledBasicButtonProps>`
   ${props => {
     switch (props.$buttonType) {
       case 'primary':
-        return `
+        return css`
           background: var(--color-primary);
           color: var(--color-white);
           &:hover {
             background: var(--color-primaryDark);
           }
         `;
-      case 'basic':
-        return `
+      case 'gray':
+        return css`
           background: var(--color-gray400);
           color: var(--color-gray600);
           &:hover {
             background: var(--color-gray500);
           }
         `;
-      case 'info':
-        return `
+      case 'red':
+        return css`
           background: var(--color-redLight);
           color: var(--color-red);
           &:hover {
@@ -56,7 +56,7 @@ export const StyledBasicButton = styled.button<StyledBasicButtonProps>`
           }
         `;
       default:
-        return `
+        return css`
           background: var(--color-primary);
           color: var(--color-white);
           &:hover {
@@ -97,5 +97,64 @@ export const StyledIconButton = styled.button<StyledIconButtonProps>`
   span:first-child {
     flex-shrink: 0;
     flex-basis: auto;
+  }
+`;
+
+export const StyledActionButton = styled.button<StyledActionButtonProps>`
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* 버튼 타입에 따른 컬러 스타일 */
+  ${({ $buttonType }) => {
+    switch ($buttonType) {
+      case 'primary':
+        return css`
+          background: var(--color-primary);
+          color: var(--color-white);
+          &:hover {
+            background: var(--color-primaryDark);
+          }
+        `;
+      case 'gray':
+        return css`
+          background: var(--color-gray200);
+          color: var(--color-gray600);
+          &:hover {
+            background: var(--color-gray300);
+          }
+        `;
+      case 'red':
+        return css`
+          background: var(--color-redLight);
+          color: var(--color-red);
+          &:hover {
+            background: var(--color-redLightDark);
+          }
+        `;
+      default:
+        return css`
+          background: var(--color-primary);
+          color: var(--color-white);
+          &:hover {
+            background: var(--color-primaryDark);
+          }
+        `;
+    }
+  }}
+
+  /* children으로 전달된 SVG 아이콘에 대한 스타일 */
+  & svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    fill: currentColor;
   }
 `;

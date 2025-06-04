@@ -1,4 +1,4 @@
-export type ButtonType = 'primary' | 'basic' | 'info';
+export type ButtonType = 'primary' | 'gray' | 'red';
 export type IconPosition = 'left' | 'right';
 
 export type StyledBasicButtonProps = Omit<BasicButtonProps, 'children' | 'buttonType'> & {
@@ -20,4 +20,8 @@ export interface IconButtonProps extends React.ComponentPropsWithoutRef<'button'
   icon?: React.ReactNode;
   iconPosition?: IconPosition;
   width?: string;
+}
+
+export interface StyledActionButtonProps extends React.ComponentPropsWithoutRef<'button'> {
+  $buttonType?: ButtonType;
 }
