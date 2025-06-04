@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import type { TableCellBaseStyles, TableDataCellStyles, DataSpanStyles, BadgeStyles } from './types';
+import type { TableCellBaseStyles, TableDataCellStyles, DataSpanStyles } from './types';
 
 const BaseSpan = styled.span`
   /* 기본 스타일: 필요시 추가 */
@@ -26,13 +26,6 @@ export const DataSpan = styled(BaseSpan)<DataSpanStyles>`
       overflow: hidden;
       text-overflow: ellipsis;
     `}
-`;
-
-export const BadgeTextSpan = styled(BaseSpan)`
-  color: white;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1.2;
 `;
 
 export const StyledTableContainer = styled.div`
@@ -144,31 +137,6 @@ export const TableDataCell = styled(TableCellBase)<TableDataCellStyles>`
         `;
     }
   }}
-`;
-
-export const Badge = styled.div<BadgeStyles>`
-  // ✨ BadgeStyles 타입 사용 ✨
-  width: 80px;
-  height: 28px;
-  border-radius: 14px;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  color: var(--color-white);
-  background: ${({ $badgeColor }) => {
-    switch ($badgeColor) {
-      case 'primary':
-        return 'var(--color-primary)';
-      case 'green':
-        return 'var(--color-green)';
-      case 'orange':
-        return 'var(--color-orange)';
-      case 'purple':
-        return 'var(--color-purple)';
-      default:
-        return 'var(--color-gray600)';
-    }
-  }};
 `;
 
 export const EmptyTableMessageRow = styled.div`
