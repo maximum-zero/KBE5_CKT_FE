@@ -12,6 +12,7 @@ export const CommonButtonStyles = `
   border: none;
   padding: 12px 24px;
   font-size: 14px;
+  font-weight: 500;
   line-height: 16.8px;
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.1s ease;
   user-select: none;
