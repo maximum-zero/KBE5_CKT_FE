@@ -1,5 +1,3 @@
-// src/components/BasicTable/BasicTable.tsx
-
 import {
   StyledTableContainer,
   StyledTableInnerContent,
@@ -9,11 +7,12 @@ import {
   TableHeaderSpan,
   TableDataCell,
   DataSpan,
-  Badge,
-  BadgeTextSpan,
   EmptyTableMessageRow,
 } from './BasicTable.styles';
-import type { BadgeColorType, TableProps, TableRowProps } from './types';
+import type { TableProps, TableRowProps } from './types';
+
+import { Badge } from '@/components/ui/badge/Badge';
+import type { BadgeColorType } from '@/components/ui/badge/types';
 
 // --- TableRow Component ---
 const TableRow = <T extends object>({ data, tableHeaders, isLastRow, onRowClick }: TableRowProps<T>) => {
@@ -43,11 +42,7 @@ const TableRow = <T extends object>({ data, tableHeaders, isLastRow, onRowClick 
             resolvedBadgeColor = tableHeader.valueToBadgeColorMap[String(valueForColor)] || 'grey';
           }
 
-          cellContent = (
-            <Badge $badgeColor={resolvedBadgeColor}>
-              <BadgeTextSpan>{String(valueForDisplay)}</BadgeTextSpan>
-            </Badge>
-          );
+          cellContent = <Badge $badgeColor={resolvedBadgeColor}>{String(valueForDisplay)}</Badge>;
         } else if (tableHeader.type === 'action') {
           cellContent = (
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>

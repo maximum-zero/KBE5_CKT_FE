@@ -1,6 +1,5 @@
 export type CellType = 'badge' | 'action' | (string & {});
 export type AlignType = 'left' | 'center' | 'right';
-export type BadgeColorType = 'primary' | 'green' | 'orange' | 'purple' | 'grey' | (string & {});
 
 /**
  * @interface TableHeader
@@ -73,12 +72,4 @@ export interface TableDataCellStyles extends TableCellBaseStyles {
  */
 export interface DataSpanStyles {
   $preventWrap?: boolean;
-}
-
-/**
- * @interface BadgeStyles
- * @description Badge 스타일 컴포넌트의 props 타입을 정의합니다.
- */
-export interface BadgeStyles {
-  $badgeColor: BadgeColorType;
 }
