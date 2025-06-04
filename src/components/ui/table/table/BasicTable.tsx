@@ -115,7 +115,7 @@ const TableRow = <T extends object>({ data, tableHeaders, isLastRow, onRowClick 
 export const BasicTable = <T extends object & { id: string | number }>({
   tableHeaders,
   data,
-  emptyMessage = '데이터가 없습니다.',
+  message = '데이터가 존재하지 않습니다.',
   onRowClick,
 }: TableProps<T>) => {
   return (
@@ -170,7 +170,7 @@ export const BasicTable = <T extends object & { id: string | number }>({
           ))
         ) : (
           <EmptyTableMessageRow>
-            <span>{emptyMessage}</span>
+            <span>{message}</span>
           </EmptyTableMessageRow>
         )}
       </StyledTableInnerContent>

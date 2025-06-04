@@ -171,11 +171,14 @@ export const Badge = styled.div<BadgeStyles>`
   }};
 `;
 
-export const EmptyTableMessageRow = styled(StyledTableRow)`
+export const EmptyTableMessageRow = styled.div`
+  display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100px;
-  color: var(--color-gray900);
+  height: 320px;
   font-size: 16px;
+  font-weight: 500;
+  color: var(--color-gray900);
+  background: var(--color-white);
   border-bottom: none;
 `;

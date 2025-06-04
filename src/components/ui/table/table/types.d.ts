@@ -42,7 +42,7 @@ export interface TableRowProps<T extends object> {
 export interface TableProps<T extends object & { id: string | number }> {
   tableHeaders: TableHeader<T>[];
   data: T[];
-  emptyMessage?: string;
+  message?: string;
   onRowClick?: (rowData: T) => void;
 }
 
