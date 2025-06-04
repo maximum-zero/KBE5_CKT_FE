@@ -68,7 +68,7 @@ export const StyledDateInputContainer = styled.div<StyledDateInputContainerProps
     display: flex;
     align-items: center;
     flex-grow: 1;
-    font-family: 'Noto Sans KR', 'Pretendard', sans-serif;
+    font-family: 'Poppins', 'Noto Sans KR', sans-serif;
     font-size: 14px;
     line-height: 16.8px;
     color: var(--color-gray900);
