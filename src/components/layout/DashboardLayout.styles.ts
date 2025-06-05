@@ -21,8 +21,8 @@ export const FilterContainer = styled.section`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray300);
   border-radius: 8px;
   padding: 16px;
 `;

@@ -78,7 +78,7 @@ export const TextInput: React.FC<TextInputProps> = memo(
 
         debounceTimer.current = setTimeout(() => {
           onChange?.(newValue);
-        }, 300);
+        }, 100);
       },
       [onChange, disabled, readOnly]
     );
