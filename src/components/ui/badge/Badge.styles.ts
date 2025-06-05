@@ -24,6 +24,8 @@ export const StyledBadge = styled.div<BadgeStyles>`
         return 'var(--color-orange)';
       case 'purple':
         return 'var(--color-purple)';
+      case 'red':
+        return 'var(--color-red)';
       case 'gray':
       default:
         return 'var(--color-gray500)';
