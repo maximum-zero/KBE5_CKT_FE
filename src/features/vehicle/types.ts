@@ -2,7 +2,7 @@
  * vehicle 에서 사용하는 타입을 정의하는 파일입니다.
  */
 import type { TableHeader } from '@/components/ui/table/table/types';
-import type { VehicleSummary } from '../api/types';
+import type { VehicleSummary } from './api/types';
 import type { DropdownOption } from '@/components/ui/input/dropdown/types';
 
 export interface UseDetailPanelReturn<T> {
