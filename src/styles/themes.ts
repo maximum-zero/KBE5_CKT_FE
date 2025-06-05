@@ -13,6 +13,10 @@ export interface CustomTheme {
   gray100: string;
   white: string;
   black: string;
+  // Secondary Color
+  red: string;
+  redDark: string;
+  redLight: string;
   // Basic Color
   green: string;
   orange: string;
@@ -32,6 +36,9 @@ const commonTheme = {
   gray100: '#FCFEFF',
   white: '#FFFFFF',
   black: '#000000',
+  red: '#EF4444',
+  redDark: '#991B1B',
+  redLight: '#FEE2E2',
   green: '#10B981',
   orange: '#EFA244',
   purple: '#6366F1',
