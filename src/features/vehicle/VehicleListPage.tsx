@@ -21,7 +21,7 @@ import { BasicTable } from '@/components/ui/table/table/BasicTable';
 
 import { useVehicleList } from './hooks/useVehicleList';
 import type { VehicleSummary } from './api/types';
-import { STATUS_OPTIONS, VEHICLE_TABLE_HEADERS } from './types/types';
+import { STATUS_OPTIONS, VEHICLE_TABLE_HEADERS } from './types';
 
 const VehicleListPage: React.FC = () => {
   const {
