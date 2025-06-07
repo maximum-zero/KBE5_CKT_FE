@@ -6,6 +6,8 @@ import { LoadingProvider } from './context/LoadingContext';
 import GlobalStyle from '@/styles/GlobalStyle';
 import DashboardLayout from '@/layouts/DashboardLayout';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import 'react-datepicker/dist/react-datepicker.css';
 
 // 페이지
@@ -60,6 +62,17 @@ function App() {
             </Routes>
           </BrowserRouter>
         </LoadingProvider>
+
+        <ToastContainer
+          position="bottom-center"
+          autoClose={3500}
+          hideProgressBar={true}
+          newestOnTop={false}
+          draggable={false}
+          closeOnClick
+          rtl={false}
+          limit={3}
+        />
       </StyledThemeProviderWrapper>
     </ThemeContextProvider>
   );
