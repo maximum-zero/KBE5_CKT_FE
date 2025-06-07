@@ -2,7 +2,7 @@
  * vehicle 에서 사용하는 타입을 정의하는 파일입니다.
  */
 import type { TableHeader } from '@/components/ui/table/table/types';
-import type { VehicleSummary } from './api/types';
+import type { Vehicle, VehicleSummary } from './api/types';
 import type { DropdownOption } from '@/components/ui/input/dropdown/types';
 
 export interface VehicleFormData {
@@ -35,11 +35,14 @@ export interface UseVehicleRegisterReturn {
   resetForm: () => void;
 }
 
-export interface UseDetailPanelReturn<T> {
-  isPanelOpen: boolean;
-  selectedItem: T | null;
-  openPanel: (item: T) => void;
+export interface UseDetailPanelReturn {
+  selectedItem: Vehicle | null;
+  openPanel: (id: number) => void;
   closePanel: () => void;
+  isLoadingDetail: boolean;
+  detailError: string | null;
+  handleUpdateVehicle: (data: Vehicle) => Promise<Vehicle | undefined>;
+  handleDeleteVehicle: () => Promise<boolean>;
 }
 
 export const VEHICLE_TABLE_HEADERS: TableHeader<VehicleSummary>[] = [
@@ -78,9 +81,12 @@ export const FUEL_TYPE_OPTIONS: DropdownOption[] = [
   { value: 'diesel', label: '디젤' },
   { value: 'electric', label: '전기' },
   { value: 'hybrid', label: '하이브리드' },
+  { value: 'lpg', label: 'LPG' },
 ];
 
 export const TRANSMISSION_TYPE_OPTIONS: DropdownOption[] = [
   { value: 'automatic', label: '자동' },
   { value: 'manual', label: '수동' },
+  { value: 'cvt', label: 'CVT' },
+  { value: 'dct', label: 'DCT' },
 ];
