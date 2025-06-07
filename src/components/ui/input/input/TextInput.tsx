@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect, memo } from 'react';
+import React, { useState, useCallback, useEffect, memo } from 'react';
 
 import { FieldContainer, StyledLabel, InputWrapper, StyledInput, IconContainer } from './TextInput.styles';
 import type { TextInputProps } from './types';
@@ -10,7 +10,7 @@ export const TextInput: React.FC<TextInputProps> = memo(
     width,
     label,
     icon,
-    initialValue = '',
+    value,
     errorText,
     disabled = false,
     readOnly = false,
@@ -22,26 +22,11 @@ export const TextInput: React.FC<TextInputProps> = memo(
     ...props
   }) => {
     const [isFocused, setIsFocused] = useState(false);
-    const [currentValue, setCurrentValue] = useState<string | number | readonly string[]>(initialValue);
-    const isInitialRender = useRef(true);
-    const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+    const [displayValue, setDisplayValue] = useState<string>(value);
 
-    // initialValue가 변경될 때마다 currentValue를 업데이트 (초기 렌더링 시에만)
     useEffect(() => {
-      if (isInitialRender.current) {
-        setCurrentValue(initialValue);
-        isInitialRender.current = false;
-      }
-    }, [initialValue]);
-
-    // 컴포넌트 언마운트 시 디바운스 타이머 클리어
-    useEffect(() => {
-      return () => {
-        if (debounceTimer.current) {
-          clearTimeout(debounceTimer.current);
-        }
-      };
-    }, []);
+      setDisplayValue(value);
+    }, [value]);
 
     const handleFocus = useCallback(
       (e: React.FocusEvent<HTMLInputElement>) => {
@@ -68,15 +53,8 @@ export const TextInput: React.FC<TextInputProps> = memo(
           return;
         }
         const newValue = e.target.value;
-        setCurrentValue(newValue);
-
-        if (debounceTimer.current) {
-          clearTimeout(debounceTimer.current);
-        }
-
-        debounceTimer.current = setTimeout(() => {
-          onChange?.(newValue);
-        }, 100);
+        setDisplayValue(newValue);
+        onChange?.(newValue);
       },
       [onChange, disabled, readOnly]
     );
@@ -87,10 +65,10 @@ export const TextInput: React.FC<TextInputProps> = memo(
           return;
         }
         if (e.key === 'Enter') {
-          onEnter?.(currentValue as string);
+          onEnter?.(displayValue);
         }
       },
-      [disabled, readOnly, onEnter, currentValue]
+      [disabled, readOnly, onEnter, displayValue]
     );
 
     const isError = !!errorText;
@@ -118,7 +96,7 @@ export const TextInput: React.FC<TextInputProps> = memo(
             onBlur={handleBlur}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            value={currentValue}
+            value={displayValue}
             disabled={disabled}
             readOnly={readOnly}
             autoComplete="off"
