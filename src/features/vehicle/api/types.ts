@@ -48,3 +48,17 @@ export interface RegisterVehicleRequest {
 export interface RegisterVehicleResponse {
   id: number;
 }
+
+export interface Vehicle {
+  id: number;
+  registrationNumber: string;
+  modelYear: string;
+  manufacturer: string;
+  modelName: string;
+  batteryVoltage?: string;
+  fuelType: string;
+  transmissionType: string;
+  status: string;
+  statusName: string;
+  memo?: string;
+}
