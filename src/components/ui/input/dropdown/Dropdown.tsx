@@ -18,20 +18,20 @@ export const Dropdown: React.FC<DropdownProps> = ({
   id,
   label,
   options,
-  initialValue,
+  value,
   placeholder = '전체',
   onSelect,
   width,
   disabled = false,
   readOnly = false,
-  required = false, // required prop 추가
-  errorText, // errorText prop 추가
+  required = false,
+  errorText,
 }) => {
   const [displayLabel, setDisplayLabel] = useState<string | undefined>(() => {
-    return initialValue ? options.find(opt => opt.value === initialValue)?.label : placeholder;
+    return value ? options.find(opt => opt.value === value)?.label : placeholder;
   });
 
-  const [selectedValue, setSelectedValue] = useState<string | number | undefined>(initialValue);
+  const [selectedValue, setSelectedValue] = useState<string | number | undefined>(value);
 
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -52,12 +52,12 @@ export const Dropdown: React.FC<DropdownProps> = ({
   }, []);
 
   useEffect(() => {
-    const newDisplayLabel = initialValue ? options.find(opt => opt.value === initialValue)?.label : placeholder;
-    if (newDisplayLabel !== displayLabel || initialValue !== selectedValue) {
-      setSelectedValue(initialValue);
+    const newDisplayLabel = value ? options.find(opt => opt.value === value)?.label : placeholder;
+    if (newDisplayLabel !== displayLabel || value !== selectedValue) {
+      setSelectedValue(value);
       setDisplayLabel(newDisplayLabel);
     }
-  }, [initialValue, options, placeholder, displayLabel, selectedValue]);
+  }, [value, options, placeholder, displayLabel, selectedValue]);
 
   const handleToggle = useCallback(() => {
     if (!isDisabledOrReadOnly) {

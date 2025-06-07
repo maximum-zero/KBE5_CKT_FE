@@ -63,7 +63,7 @@ export const VehicleRegisterPopup: React.FC<VehicleRegisterPopupProps> = ({ isOp
               label="차량 번호"
               placeholder="예: 12가 3456"
               onChange={value => handleInputChange('registrationNumber', value)}
-              initialValue={formData.registrationNumber}
+              value={formData.registrationNumber}
               onEnter={handleRegister}
               autoFocus
               required={true}
@@ -78,7 +78,7 @@ export const VehicleRegisterPopup: React.FC<VehicleRegisterPopupProps> = ({ isOp
               label="연식"
               placeholder="예: 2025"
               onChange={value => handleInputChange('modelYear', value)}
-              initialValue={formData.modelYear}
+              value={formData.modelYear}
               onEnter={handleRegister}
               required={true}
               maxLength={4}
@@ -92,7 +92,7 @@ export const VehicleRegisterPopup: React.FC<VehicleRegisterPopupProps> = ({ isOp
               label="제조사"
               placeholder="예: 기아"
               onChange={value => handleInputChange('manufacturer', value)}
-              initialValue={formData.manufacturer}
+              value={formData.manufacturer}
               onEnter={handleRegister}
               required={true}
               maxLength={20}
@@ -106,7 +106,7 @@ export const VehicleRegisterPopup: React.FC<VehicleRegisterPopupProps> = ({ isOp
               label="모델명"
               placeholder="예: 아반떼"
               onChange={value => handleInputChange('modelName', value)}
-              initialValue={formData.modelName}
+              value={formData.modelName}
               onEnter={handleRegister}
               required={true}
               maxLength={20}
@@ -126,7 +126,7 @@ export const VehicleRegisterPopup: React.FC<VehicleRegisterPopupProps> = ({ isOp
               label="배터리 전력(kWh)"
               placeholder="예: 64"
               onChange={value => handleInputChange('batteryVoltage', value)}
-              initialValue={formData.batteryVoltage}
+              value={formData.batteryVoltage}
               onEnter={handleRegister}
               maxLength={4}
               errorText={errors.batteryVoltage}
@@ -138,7 +138,7 @@ export const VehicleRegisterPopup: React.FC<VehicleRegisterPopupProps> = ({ isOp
               label="연료 유형"
               options={FUEL_TYPE_OPTIONS}
               onSelect={value => handleInputChange('fuelType', value.toString())}
-              initialValue={formData.fuelType}
+              value={formData.fuelType}
               required={true}
               errorText={errors.fuelType}
             />
@@ -149,7 +149,7 @@ export const VehicleRegisterPopup: React.FC<VehicleRegisterPopupProps> = ({ isOp
               label="변속기"
               options={TRANSMISSION_TYPE_OPTIONS}
               onSelect={value => handleInputChange('transmissionType', value.toString())}
-              initialValue={formData.transmissionType}
+              value={formData.transmissionType}
               required={true}
               errorText={errors.transmissionType}
             />
@@ -165,7 +165,7 @@ export const VehicleRegisterPopup: React.FC<VehicleRegisterPopupProps> = ({ isOp
             label="특이사항"
             placeholder="차량에 대한 특이사항을 입력하세요"
             onChange={value => handleInputChange('memo', value)}
-            initialValue={formData.memo}
+            value={formData.memo}
             minHeight="120px"
           />
         </MemoSection>
