@@ -23,6 +23,7 @@ import {
 import { FUEL_TYPE_OPTIONS, TRANSMISSION_TYPE_OPTIONS } from './types';
 import { useDetailPanel } from './hooks/useVehicleDetail';
 import type { Vehicle } from './api/types';
+import { useConfirm } from '@/hooks/useConfirm';
 
 interface VehicleDetailPanelProps {
   vehicleId: number | null;
@@ -37,6 +38,8 @@ export const VehicleDetailPanel: React.FC<VehicleDetailPanelProps> = ({
   onClose,
   onSuccessSave,
 }) => {
+  const { confirm } = useConfirm();
+
   const {
     selectedItem,
     openPanel,
@@ -77,7 +80,14 @@ export const VehicleDetailPanel: React.FC<VehicleDetailPanelProps> = ({
       return;
     }
 
-    if (!window.confirm(`차량 등록번호 ${editedVehicle.registrationNumber}을(를) 정말 삭제하시겠습니까?`)) {
+    const isConfirmed = await confirm({
+      title: '차량 삭제',
+      content: `차량 등록번호 ${editedVehicle.registrationNumber}을(를) 정말 삭제하시겠습니까?`,
+      confirmText: '삭제',
+      cancelText: '취소',
+    });
+
+    if (!isConfirmed) {
       return;
     }
 

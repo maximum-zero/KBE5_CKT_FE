@@ -10,7 +10,7 @@ import { CODE_SUCCESS, type CommonResponse } from '@/utils/response';
 
 //TODO: 엑세스 토큰 임시로 임의로 추가
 const temporaryAccessToken =
-  'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzQ5Mjk5MDQxLCJleHAiOjE3NDkzMDI2NDF9.WCD9URM783g7MCS5c6EMs_kTGPasQzoQbQiAcwKpD_U';
+  'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzQ5MzA0NTg0LCJleHAiOjE3NDkzMDgxODR9.motcxFU1zydwjNxJHa7korCk9azCO_XCD-Ba72PoNAM';
 
 export const fetchVehicles = async (params: VehicleListRequest): Promise<VehicleListResponse> => {
   const response = await api.get<CommonResponse<VehicleListResponse>>('/api/v1/vehicles', {
