@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import PlusIcon from '@/assets/icons/ic-plus.svg?react';
 import SearchIcon from '@/assets/icons/ic-search.svg?react';
@@ -22,6 +22,7 @@ import { BasicTable } from '@/components/ui/table/table/BasicTable';
 import { useVehicleList } from './hooks/useVehicleList';
 import type { VehicleSummary } from './api/types';
 import { STATUS_OPTIONS, VEHICLE_TABLE_HEADERS } from './types';
+import { VehicleRegisterPopup } from './VehicleRegisterPopup';
 
 const VehicleListPage: React.FC = () => {
   const {
@@ -58,11 +59,31 @@ const VehicleListPage: React.FC = () => {
     console.log('선택된 차량:', rowData);
   };
 
+  const handleRegister = () => {
+    openPopup();
+  };
+
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  // 팝업 열기 핸들러
+  const openPopup = () => {
+    setIsPopupOpen(true);
+    console.log('팝업 열기');
+  };
+
+  // 팝업 닫기 핸들러
+  const closePopup = () => {
+    setIsPopupOpen(false);
+    console.log('팝업 닫기');
+  };
+
   return (
     <DashboardContainer>
       <TitleContainer>
         <h2>차량 관리</h2>
-        <IconButton icon={<PlusIcon />}>차량 등록</IconButton>
+        <IconButton icon={<PlusIcon />} onClick={handleRegister}>
+          차량 등록
+        </IconButton>
       </TitleContainer>
 
       <FilterContainer>
@@ -114,6 +135,8 @@ const VehicleListPage: React.FC = () => {
           />
         )}
       </TableContainer>
+
+      <VehicleRegisterPopup isOpen={isPopupOpen} onClose={closePopup} />
     </DashboardContainer>
   );
 };

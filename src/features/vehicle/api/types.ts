@@ -33,3 +33,18 @@ export interface VehicleSummary {
   statusName: string;
   memo: string;
 }
+
+export interface RegisterVehicleRequest {
+  registrationNumber: string;
+  modelYear: string;
+  manufacturer: string;
+  modelName: string;
+  batteryVoltage: string;
+  fuelType: string;
+  transmissionType: string;
+  memo: string;
+}
+
+export interface RegisterVehicleResponse {
+  id: number;
+}
