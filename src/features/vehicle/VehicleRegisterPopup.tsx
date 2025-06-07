@@ -1,37 +1,59 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { Popup } from '@/components/ui/modal/popup/Popup';
 import { Text } from '@/components/ui/text/Text';
 import { TextInput } from '@/components/ui/input/input/TextInput';
 import { Dropdown } from '@/components/ui/input/dropdown/Dropdown';
 import { BasicButton } from '@/components/ui/button/BasicButton';
-import { FormRow, FormSection, FormFieldWrapper, MemoSection } from './VehicleRegisterPopup.styles';
 import { TextArea } from '@/components/ui/input/textarea/TextArea';
 
-import { useVehicleRegister } from './hooks/useVehicleReigster';
+import { FormRow, FormSection, FormFieldWrapper, MemoSection } from './VehicleRegisterPopup.styles';
+
+import { useVehicleRegister } from './hooks/useVehicleRegister';
 import { FUEL_TYPE_OPTIONS, TRANSMISSION_TYPE_OPTIONS } from './types';
 
+// --- VehicleRegisterPopup 컴포넌트의 props 인터페이스 정의 ---
 interface VehicleRegisterPopupProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean; // 팝업이 현재 열려 있는지 여부
+  onClose: (success?: boolean) => void; // 팝업이 닫힐 때 호출될 콜백 함수 (등록 성공 여부 전달)
 }
 
+/**
+ * 차량 등록을 위한 팝업 컴포넌트입니다.
+ * 사용자로부터 차량 정보를 입력받아 등록 처리하며, `useVehicleRegister` 훅을 통해 폼 로직을 관리합니다.
+ */
 export const VehicleRegisterPopup: React.FC<VehicleRegisterPopupProps> = ({ isOpen, onClose }) => {
+  // -----------------------------------------------------------------------
+  // 🚀 폼 관련 상태 및 함수 가져오기 (useVehicleList 훅 활용)
+  // -----------------------------------------------------------------------
   const { formData, errors, handleInputChange, handleSubmit, resetForm } = useVehicleRegister();
 
-  const handleRegister = async () => {
+  // -----------------------------------------------------------------------
+  // 핸들러 함수들
+  // -----------------------------------------------------------------------
+
+  /**
+   * '등록' 버튼 클릭 시 호출되는 핸들러 함수.
+   * 폼 유효성 검사 후 데이터 제출을 시도하고, 성공 시 폼을 리셋하고 팝업을 닫습니다.
+   */
+  const handleRegister = useCallback(async () => {
     const isSuccess = await handleSubmit();
     if (isSuccess) {
       resetForm();
-      onClose();
+      onClose(true);
     }
-  };
+  }, [handleSubmit, resetForm, onClose]);
 
-  const handleCancel = () => {
+  /**
+   * '취소' 버튼 클릭 시 또는 팝업 외부 영역 클릭 시 호출되는 핸들러 함수.
+   * 폼을 리셋하고 팝업을 닫습니다. (등록 실패/취소로 간주)
+   */
+  const handleCancel = useCallback(() => {
     resetForm();
-    onClose();
-  };
+    onClose(false);
+  }, [resetForm, onClose]);
 
+  // --- 팝업 하단에 표시될 액션 버튼들 ---
   const popupActionButtons = (
     <>
       <BasicButton buttonType="basic" onClick={handleCancel}>
@@ -43,16 +65,12 @@ export const VehicleRegisterPopup: React.FC<VehicleRegisterPopupProps> = ({ isOp
     </>
   );
 
+  // -----------------------------------------------------------------------
+  // 렌더링
+  // -----------------------------------------------------------------------
   return (
-    <Popup
-      isOpen={isOpen}
-      onClose={() => {
-        resetForm();
-        onClose();
-      }}
-      title="차량 등록"
-      actionButtons={popupActionButtons}
-    >
+    <Popup isOpen={isOpen} onClose={handleCancel} title="차량 등록" actionButtons={popupActionButtons}>
+      {/* --- 기본 정보 섹션 --- */}
       <FormSection>
         <Text type="subheading2">기본 정보</Text>
         <FormRow>
@@ -116,6 +134,7 @@ export const VehicleRegisterPopup: React.FC<VehicleRegisterPopupProps> = ({ isOp
         </FormRow>
       </FormSection>
 
+      {/* --- 기술 정보 섹션 --- */}
       <FormSection>
         <Text type="subheading2">기술 정보</Text>
         <FormRow>
@@ -157,6 +176,7 @@ export const VehicleRegisterPopup: React.FC<VehicleRegisterPopupProps> = ({ isOp
         </FormRow>
       </FormSection>
 
+      {/* --- 추가 정보 섹션 --- */}
       <FormSection>
         <Text type="subheading2">추가 정보</Text>
         <MemoSection>
