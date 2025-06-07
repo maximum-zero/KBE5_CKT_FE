@@ -108,20 +108,14 @@ export const StyledDropdownContainer = styled.div<StyledDropdownContainerProps>`
 `;
 
 export const OptionsList = styled.ul`
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 10;
   background: var(--color-white);
   border: 1px var(--color-gray400) solid;
   border-radius: 6px;
-  margin-top: 4px;
   padding: 0;
   list-style: none;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   max-height: 200px;
-  overflow-y: auto;
+  overflow-y: auto; /* 필요한 경우 유지 */
   user-select: none;
 
   /* WebKit (Chrome, Safari) */
