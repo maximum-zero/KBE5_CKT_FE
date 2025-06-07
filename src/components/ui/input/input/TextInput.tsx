@@ -60,10 +60,6 @@ export const TextInput: React.FC<TextInputProps> = memo(
       (e: React.FocusEvent<HTMLInputElement>) => {
         setIsFocused(false);
         onBlur?.(e);
-        if (debounceTimer.current) {
-          clearTimeout(debounceTimer.current);
-          debounceTimer.current = null;
-        }
       },
       [onBlur]
     );
