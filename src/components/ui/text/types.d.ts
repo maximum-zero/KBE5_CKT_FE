@@ -7,7 +7,9 @@ import { HTMLMotionProps } from 'framer-motion';
 export interface TextProps extends HTMLMotionProps<'span'> {
   type?:
     | 'heading'
+    | 'heading2'
     | 'subheading'
+    | 'subheading2'
     | 'label'
     | 'body1'
     | 'body2'

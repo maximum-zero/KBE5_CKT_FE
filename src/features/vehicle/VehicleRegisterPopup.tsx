@@ -54,7 +54,7 @@ export const VehicleRegisterPopup: React.FC<VehicleRegisterPopupProps> = ({ isOp
       actionButtons={popupActionButtons}
     >
       <FormSection>
-        <Text type="subheading">기본 정보</Text>
+        <Text type="subheading2">기본 정보</Text>
         <FormRow>
           <FormFieldWrapper>
             <TextInput
@@ -117,7 +117,7 @@ export const VehicleRegisterPopup: React.FC<VehicleRegisterPopupProps> = ({ isOp
       </FormSection>
 
       <FormSection>
-        <Text type="subheading">기술 정보</Text>
+        <Text type="subheading2">기술 정보</Text>
         <FormRow>
           <FormFieldWrapper>
             <TextInput
@@ -158,7 +158,7 @@ export const VehicleRegisterPopup: React.FC<VehicleRegisterPopupProps> = ({ isOp
       </FormSection>
 
       <FormSection>
-        <Text type="subheading">추가 정보</Text>
+        <Text type="subheading2">추가 정보</Text>
         <MemoSection>
           <TextArea
             id="memo"
