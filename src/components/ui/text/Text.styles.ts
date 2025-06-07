@@ -7,12 +7,26 @@ export const BaseSpan = styled(motion.span)`
 
 export const HeadingText = styled(BaseSpan)`
   color: var(--color-gray900);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 28.8px;
+`;
+
+export const Heading2Text = styled(BaseSpan)`
+  color: var(--color-gray900);
   font-size: 20px;
   font-weight: 700;
   line-height: 24px;
 `;
 
 export const SubheadingText = styled(BaseSpan)`
+  color: var(--color-gray800);
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 21.6px;
+`;
+
+export const Subheading2Text = styled(BaseSpan)`
   color: var(--color-gray800);
   font-size: 16px;
   font-weight: 900;

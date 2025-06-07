@@ -22,7 +22,7 @@ export const Popup: React.FC<BasicPopupProps> = ({ isOpen, onClose, title, child
             onClick={e => e.stopPropagation()}
           >
             <Header>
-              <Text type="heading">{title}</Text>
+              <Text type="heading2">{title}</Text>
               <ActionButton icon={<IconClose />} buttonType="gray" onClick={onClose} aria-label="닫기" />
             </Header>
 
