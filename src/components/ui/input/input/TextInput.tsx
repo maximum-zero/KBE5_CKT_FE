@@ -1,21 +1,26 @@
+// src/components/ui/input/input/TextInput.tsx
+
 import React, { useState, useCallback, useRef, useEffect, memo } from 'react';
 
 import { FieldContainer, StyledLabel, InputWrapper, StyledInput, IconContainer } from './TextInput.styles';
 import type { TextInputProps } from './types';
+import { Text } from '@/components/ui/text/Text'; // Text 컴포넌트 임포트
 
 export const TextInput: React.FC<TextInputProps> = memo(
   ({
+    id,
+    width,
     label,
     icon,
+    initialValue = '',
+    errorText,
     disabled = false,
     readOnly = false,
+    required = false,
     onFocus,
     onBlur,
     onChange,
     onEnter,
-    initialValue = '',
-    id,
-    width,
     ...props
   }) => {
     const [isFocused, setIsFocused] = useState(false);
@@ -65,7 +70,6 @@ export const TextInput: React.FC<TextInputProps> = memo(
 
     const handleInputChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
-        // disabled 또는 readOnly 상태일 때는 변경 이벤트 무시
         if (disabled || readOnly) {
           return;
         }
@@ -95,10 +99,25 @@ export const TextInput: React.FC<TextInputProps> = memo(
       [disabled, readOnly, onEnter, currentValue]
     );
 
+    const isError = !!errorText;
+
     return (
       <FieldContainer $width={width}>
-        {label && <StyledLabel htmlFor={id}>{label}</StyledLabel>}
-        <InputWrapper $isFocused={isFocused} $hasIcon={!!icon} $isDisabled={disabled} $isReadOnly={readOnly}>
+        {label && (
+          <StyledLabel htmlFor={id}>
+            <Text type="label">
+              {label}
+              {required && <span style={{ color: 'var(--color-red)', marginLeft: '4px' }}>*</span>}
+            </Text>
+          </StyledLabel>
+        )}
+        <InputWrapper
+          $isFocused={isFocused}
+          $hasIcon={!!icon}
+          $isDisabled={disabled}
+          $isReadOnly={readOnly}
+          $isError={isError}
+        >
           <StyledInput
             id={id}
             onFocus={handleFocus}
@@ -112,6 +131,13 @@ export const TextInput: React.FC<TextInputProps> = memo(
           />
           {icon && <IconContainer>{icon}</IconContainer>}
         </InputWrapper>
+        {isError && (
+          <Text type="error" style={{ marginLeft: '4px' }}>
+            {' '}
+            {/* 에러 텍스트 마진 추가 */}
+            {errorText}
+          </Text>
+        )}
       </FieldContainer>
     );
   }

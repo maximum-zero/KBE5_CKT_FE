@@ -5,15 +5,13 @@ export const FieldContainer = styled.div<FieldContainerProps>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
+  gap: 4px;
   min-width: ${({ $width }) => $width || '200px'};
 `;
 
 export const StyledLabel = styled.label`
-  color: var(--color-gray700);
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 16.8px;
+  /* 기존 스타일은 Text 컴포넌트의 type="label"에 의해 적용됩니다. */
+  /* 여기서는 단순히 htmlFor 연결을 위한 label 태그 역할만 합니다. */
   user-select: none;
 `;
 
@@ -26,7 +24,7 @@ export const InputWrapper = styled.div<InputWrapperProps>`
   padding: 0 12px;
   background: var(--color-white);
   border-radius: 6px;
-  outline: 1px solid var(--color-gray400);
+  outline: 1px var(--color-gray400) solid; /* 기본 테두리 색상 */
   outline-offset: -1px;
   transition:
     outline-color 0.2s ease,
@@ -36,7 +34,14 @@ export const InputWrapper = styled.div<InputWrapperProps>`
   ${({ $isFocused }) =>
     $isFocused &&
     css`
-      outline: 1px solid var(--color-primary);
+      outline: 1px var(--color-primary) solid;
+      outline-offset: -1px;
+    `}
+
+  ${({ $isError }) =>
+    $isError &&
+    css`
+      outline: 1px var(--color-red) solid; /* 에러 시 빨간 테두리 */
       outline-offset: -1px;
     `}
 
@@ -53,7 +58,7 @@ export const InputWrapper = styled.div<InputWrapperProps>`
         color: var(--color-gray600);
       }
       &:focus-within {
-        outline: 1px solid var(--color-gray400); /* disabled 시 포커스 아웃라인 고정 */
+        outline: 1px var(--color-gray400) solid; /* disabled 시 포커스 아웃라인 고정 */
       }
       ${IconContainer} {
         cursor: not-allowed;
@@ -63,15 +68,14 @@ export const InputWrapper = styled.div<InputWrapperProps>`
   ${({ $isReadOnly }) =>
     $isReadOnly &&
     css`
-      /* readOnly 시 background는 white 유지, 커서만 not-allowed */
-      background: var(--color-white); /* 읽기 전용은 배경을 회색으로 바꾸지 않음 */
+      background: var(--color-white);
       cursor: not-allowed;
       ${StyledInput} {
-        color: var(--color-gray900); /* 읽기 전용은 글자색 유지 */
+        color: var(--color-gray900);
         cursor: not-allowed;
       }
       &:focus-within {
-        outline: 1px solid var(--color-gray400); /* readOnly 시 포커스 아웃라인 고정 */
+        outline: 1px var(--color-gray400) solid; /* readOnly 시 포커스 아웃라인 고정 */
       }
       ${IconContainer} {
         cursor: not-allowed;
@@ -82,7 +86,6 @@ export const InputWrapper = styled.div<InputWrapperProps>`
   ${({ $isDisabled, $isReadOnly }) =>
     ($isDisabled || $isReadOnly) &&
     css`
-      /* 둘 중 하나라도 true면 outline 컬러 변경 방지 */
       ${StyledInput} {
         pointer-events: none; /* 클릭 이벤트 방지 (커서만 변경하는 것 이상으로 상호작용 차단) */
       }
@@ -116,6 +119,7 @@ export const StyledInput = styled.input`
   font-size: 14px;
   line-height: 16.8px;
   color: var(--color-gray900);
+  box-sizing: border-box; /* 추가: padding/border가 width에 포함되도록 */
 
   &::placeholder {
     color: var(--color-gray600);

@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef, useEffect, memo } from 'react';
 
 import { FieldContainer, StyledLabel, InputWrapper, StyledTextArea } from './TextAres.styles';
 import type { TextAreaProps } from './types';
+import { Text } from '@/components/ui/text/Text';
 
 export const TextArea: React.FC<TextAreaProps> = memo(
   ({
@@ -16,13 +17,15 @@ export const TextArea: React.FC<TextAreaProps> = memo(
     width,
     minHeight = '80px',
     maxHeight,
+    required = false,
+    errorText,
     ...props
   }) => {
     const [isFocused, setIsFocused] = useState(false);
-    const [currentValue, setCurrentValue] = useState<string>(initialValue as string); // TextArea는 string으로 고정
+    const [currentValue, setCurrentValue] = useState<string>(initialValue as string);
     const isInitialRender = useRef(true);
     const debounceTimer = useRef<NodeJS.Timeout | null>(null);
-    const textAreaRef = useRef<HTMLTextAreaElement>(null); // textarea 요소 참조
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
     // initialValue가 변경될 때마다 currentValue를 업데이트 (초기 렌더링 시에만)
     useEffect(() => {
@@ -79,7 +82,6 @@ export const TextArea: React.FC<TextAreaProps> = memo(
           clearTimeout(debounceTimer.current);
         }
 
-        // 100ms 디바운스
         debounceTimer.current = setTimeout(() => {
           onChange?.(newValue);
         }, 100);
@@ -87,10 +89,19 @@ export const TextArea: React.FC<TextAreaProps> = memo(
       [onChange, disabled, readOnly]
     );
 
+    const isError = !!errorText; // 에러 텍스트가 있으면 true
+
     return (
       <FieldContainer $width={width} $minHeight={minHeight} $maxHeight={maxHeight}>
-        {label && <StyledLabel htmlFor={id}>{label}</StyledLabel>}
-        <InputWrapper $isFocused={isFocused} $isDisabled={disabled} $isReadOnly={readOnly}>
+        {label && (
+          <StyledLabel htmlFor={id}>
+            <Text type="label">
+              {label}
+              {required && <span style={{ color: 'var(--color-red)', marginLeft: '4px' }}>*</span>}
+            </Text>
+          </StyledLabel>
+        )}
+        <InputWrapper $isFocused={isFocused} $isDisabled={disabled} $isReadOnly={readOnly} $isError={isError}>
           <StyledTextArea
             id={id}
             ref={textAreaRef}
@@ -103,6 +114,11 @@ export const TextArea: React.FC<TextAreaProps> = memo(
             {...props}
           />
         </InputWrapper>
+        {isError && (
+          <Text type="error" style={{ marginLeft: '4px' }}>
+            {errorText}
+          </Text>
+        )}
       </FieldContainer>
     );
   }
