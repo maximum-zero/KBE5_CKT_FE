@@ -8,7 +8,7 @@ export interface DropdownProps {
   width?: string;
   label?: string;
   options: DropdownOption[];
-  initialValue?: string | number;
+  value?: string | number;
   errorText?: string;
   placeholder?: string;
   required?: boolean;

@@ -5,7 +5,7 @@ export interface TextAreaProps extends Omit<React.TextareaHTMLAttributes<HTMLTex
   minHeight?: string;
   maxHeight?: string;
   label?: string;
-  initialValue?: string;
+  value?: string;
   errorText?: string;
   required?: boolean;
   onChange?: (value: string) => void;

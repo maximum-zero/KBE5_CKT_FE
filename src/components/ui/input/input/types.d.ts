@@ -5,7 +5,7 @@ export interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInput
   label?: string;
   icon?: React.ReactNode;
   required?: boolean;
-  initialValue?: string | number | readonly string[];
+  value: string;
   errorText?: string;
   onChange?: (value: string) => void;
   onEnter?: (value: string) => void;
