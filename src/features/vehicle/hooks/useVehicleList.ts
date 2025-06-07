@@ -28,6 +28,7 @@ interface UseVehicleListResult {
   filters: VehicleListFilters;
   setFilters: (newFilters: Partial<VehicleListFilters>) => void;
   setCurrentPage: (page: number) => void;
+  setItemsPerPage: (items: number) => void;
   refetch: (options?: { page?: number; filters?: Partial<VehicleListFilters> }) => void;
 }
 
@@ -104,6 +105,7 @@ export const useVehicleList = (options?: UseVehicleListOptions): UseVehicleListR
     filters,
     setFilters,
     setCurrentPage: setPage,
+    setItemsPerPage,
     refetch,
   };
 };

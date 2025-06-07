@@ -5,6 +5,36 @@ import type { TableHeader } from '@/components/ui/table/table/types';
 import type { VehicleSummary } from './api/types';
 import type { DropdownOption } from '@/components/ui/input/dropdown/types';
 
+export interface VehicleFormData {
+  registrationNumber: string;
+  modelYear: string;
+  manufacturer: string;
+  modelName: string;
+  batteryVoltage: string;
+  fuelType: string;
+  transmissionType: string;
+  memo: string;
+}
+
+export interface VehicleFormErrors {
+  registrationNumber?: string;
+  modelYear?: string;
+  manufacturer?: string;
+  modelName?: string;
+  batteryVoltage?: string;
+  fuelType?: string;
+  transmissionType?: string;
+  memo?: string;
+}
+
+export interface UseVehicleRegisterReturn {
+  formData: VehicleFormData;
+  errors: VehicleFormErrors;
+  handleInputChange: (id: keyof VehicleFormData, value: string) => void;
+  handleSubmit: () => Promise<boolean>;
+  resetForm: () => void;
+}
+
 export interface UseDetailPanelReturn<T> {
   isPanelOpen: boolean;
   selectedItem: T | null;
@@ -41,4 +71,16 @@ export const STATUS_OPTIONS: DropdownOption[] = [
   { value: 'AVAILABLE', label: '대여 가능' },
   { value: 'RENTED', label: '대여중' },
   { value: 'INACTIVE', label: '비활성화' },
+];
+
+export const FUEL_TYPE_OPTIONS: DropdownOption[] = [
+  { value: 'gasoline', label: '가솔린' },
+  { value: 'diesel', label: '디젤' },
+  { value: 'electric', label: '전기' },
+  { value: 'hybrid', label: '하이브리드' },
+];
+
+export const TRANSMISSION_TYPE_OPTIONS: DropdownOption[] = [
+  { value: 'automatic', label: '자동' },
+  { value: 'manual', label: '수동' },
 ];
