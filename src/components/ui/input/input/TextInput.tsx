@@ -1,10 +1,8 @@
-// src/components/ui/input/input/TextInput.tsx
-
 import React, { useState, useCallback, useRef, useEffect, memo } from 'react';
 
 import { FieldContainer, StyledLabel, InputWrapper, StyledInput, IconContainer } from './TextInput.styles';
 import type { TextInputProps } from './types';
-import { Text } from '@/components/ui/text/Text'; // Text 컴포넌트 임포트
+import { Text } from '@/components/ui/text/Text';
 
 export const TextInput: React.FC<TextInputProps> = memo(
   ({
@@ -123,6 +121,7 @@ export const TextInput: React.FC<TextInputProps> = memo(
             value={currentValue}
             disabled={disabled}
             readOnly={readOnly}
+            autoComplete="off"
             {...props}
           />
           {icon && <IconContainer>{icon}</IconContainer>}
@@ -130,7 +129,6 @@ export const TextInput: React.FC<TextInputProps> = memo(
         {isError && (
           <Text type="error" style={{ marginLeft: '4px' }}>
             {' '}
-            {/* 에러 텍스트 마진 추가 */}
             {errorText}
           </Text>
         )}

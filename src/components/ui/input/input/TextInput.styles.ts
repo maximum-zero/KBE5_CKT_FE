@@ -82,15 +82,6 @@ export const InputWrapper = styled.div<InputWrapperProps>`
       }
     `}
 
-  /* disabled와 readOnly 상태일 때 outline-color 변경 방지 */
-  ${({ $isDisabled, $isReadOnly }) =>
-    ($isDisabled || $isReadOnly) &&
-    css`
-      ${StyledInput} {
-        pointer-events: none; /* 클릭 이벤트 방지 (커서만 변경하는 것 이상으로 상호작용 차단) */
-      }
-    `}
-
   ${({ $hasIcon }) =>
     $hasIcon &&
     css`
