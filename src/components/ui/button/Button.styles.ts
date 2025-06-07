@@ -41,10 +41,10 @@ export const StyledBasicButton = styled.button<StyledBasicButtonProps>`
         `;
       case 'red':
         return css`
-          background: var(--color-redLight);
-          color: var(--color-red);
+          background: var(--color-red);
+          color: var(--color-white);
           &:hover {
-            background: var(--color-redLightDark);
+            background: var(--color-redDark);
           }
         `;
       case 'basic':
@@ -132,14 +132,6 @@ export const StyledActionButton = styled.button<StyledActionButtonProps>`
           color: var(--color-gray600);
           &:hover {
             background: var(--color-gray300);
-          }
-        `;
-      case 'red':
-        return css`
-          background: var(--color-redLight);
-          color: var(--color-red);
-          &:hover {
-            background: var(--color-redLightDark);
           }
         `;
       default:
