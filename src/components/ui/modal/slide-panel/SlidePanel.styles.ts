@@ -8,7 +8,7 @@ export const Overlay = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  z-index: 100;
   transition: opacity 0.3s ease-in-out;
 `;
 
@@ -19,7 +19,7 @@ export const PanelContainer = styled.div<PanelContainerProps>`
   height: 100vh;
   background-color: var(--color-white);
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
-  z-index: 1001;
+  z-index: 101;
   width: ${({ $width }) => $width};
   display: flex;
   flex-direction: column;
