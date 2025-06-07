@@ -33,6 +33,11 @@ export const Subheading2Text = styled(BaseSpan)`
   line-height: 19.2px;
 `;
 
+export const Body2Text = styled(BaseSpan)`
+  font-size: 14px;
+  line-height: 16.8px;
+`;
+
 export const LabelText = styled(BaseSpan)`
   color: var(--color-gray700);
   font-size: 14px;
