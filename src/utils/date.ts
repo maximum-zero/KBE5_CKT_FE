@@ -1,4 +1,4 @@
-import { parseISO, format, setMilliseconds, setSeconds, setMinutes, setHours } from 'date-fns';
+import { parseISO, format, setMilliseconds, setSeconds, setMinutes, setHours, isAfter, isBefore } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
 
 /**
@@ -71,3 +71,5 @@ export const startOfDay = (date: Date): Date => {
 export const endOfDay = (date: Date): Date => {
   return setMilliseconds(setSeconds(setMinutes(setHours(date, 23), 59), 59), 999);
 };
+
+export { isAfter, isBefore };

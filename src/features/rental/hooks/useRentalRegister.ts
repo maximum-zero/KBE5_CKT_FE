@@ -1,7 +1,10 @@
 import { useCallback, useState } from 'react';
-import type { RentalFormData, RentalFormErrors, UseRentalRegisterReturn } from '../types';
 import { useLoading } from '@/context/LoadingContext';
 import { toast } from 'react-toastify';
+
+import { isBefore, isAfter, startOfDay } from '@/utils/date';
+
+import type { RentalFormData, RentalFormErrors, UseRentalRegisterReturn } from '../types';
 
 /**
  * 예약 등록 폼의 데이터, 유효성 검사, 제출 로직을 추상화한 커스텀 훅입니다.
@@ -34,7 +37,7 @@ export const useRentalRegister = (): UseRentalRegisterReturn => {
    * @param id 변경된 입력 필드의 ID (즉, `formData` 객체의 키)
    * @param value 변경된 입력 필드의 새 값
    */
-  const handleInputChange = useCallback((id: keyof RentalFormData, value: string) => {
+  const handleInputChange = useCallback((id: keyof RentalFormData, value: unknown) => {
     setFormData(prev => ({ ...prev, [id]: value })); // 특정 필드 값 업데이트
     setErrors(prev => {
       const newErrors = { ...prev };
@@ -51,6 +54,38 @@ export const useRentalRegister = (): UseRentalRegisterReturn => {
   const validateForm = useCallback((): boolean => {
     let isValid = true;
     const newErrors: RentalFormErrors = {};
+    const today = startOfDay(new Date());
+
+    // vehicleId 유효성 검사
+    if (formData.vehicleId === null) {
+      newErrors.vehicleId = '차량을 선택해주세요.';
+      isValid = false;
+    }
+
+    // customerId 유효성 검사
+    if (formData.customerId === null) {
+      newErrors.customerId = '고객을 선택해주세요.';
+      isValid = false;
+    }
+
+    // pickupAt 유효성 검사
+    if (formData.pickupAt === null) {
+      newErrors.pickupAt = '대여 날짜를 선택해주세요.';
+      isValid = false;
+    } else if (isBefore(formData.pickupAt, today)) {
+      // 오늘보다 과거인지 확인
+      newErrors.pickupAt = '대여 날짜는 오늘 이후여야 합니다.';
+      isValid = false;
+    }
+
+    // returnAt 유효성 검사
+    if (formData.returnAt === null) {
+      newErrors.returnAt = '반납 날짜를 선택해주세요.';
+      isValid = false;
+    } else if (formData.pickupAt && !isAfter(formData.returnAt, formData.pickupAt)) {
+      newErrors.returnAt = '반납 날짜는 대여 날짜 이후여야 합니다.';
+      isValid = false;
+    }
 
     setErrors(newErrors);
     return isValid;
@@ -78,6 +113,8 @@ export const useRentalRegister = (): UseRentalRegisterReturn => {
         returnAt: formData.returnAt,
         memo: formData.memo,
       };
+
+      console.log('requestData > ', requestData);
 
       // await registerRental(requestData);
       toast.success('저장되었습니다.');
