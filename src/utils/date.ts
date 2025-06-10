@@ -1,5 +1,10 @@
-import { parseISO, format, setMilliseconds, setSeconds, setMinutes, setHours } from 'date-fns';
+import { parseISO, format, setMilliseconds, setSeconds, setMinutes, setHours, isBefore, isAfter } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
+
+/**
+ * 기본 date-fns 문법을 사용합니다.
+ */
+export { isBefore, isAfter };
 
 /**
  * 현재 시스템의 로컬 타임존 ID를 가져옵니다.
@@ -46,7 +51,7 @@ export const formatLocalDateTime = (datetimeString: string): string => {
 export const formatDateTime = (
   dateValue: Date | null | undefined,
   timeZone: string = getSystemTimeZone(),
-  formatString: string = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
+  formatString: string = "yyyy-MM-dd'T'HH:mm:ss"
 ): string | undefined => {
   if (dateValue instanceof Date) {
     return formatInTimeZone(dateValue, timeZone, formatString);

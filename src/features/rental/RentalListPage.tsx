@@ -115,13 +115,7 @@ const RentalListPage: React.FC = () => {
    * 예약 등록 팝업 열기 핸들러.
    */
   const handleRegister = useCallback(async () => {
-    // setIsRegisterPopupOpen(true);
-    await confirm({
-      title: '현재 기능이 구현되지 않았습니다.',
-      content: `담당자(최대영님)께 문의부탁드립니다.`,
-      confirmText: '갈구기',
-      cancelText: '문의',
-    });
+    setIsRegisterPopupOpen(true);
   }, []);
 
   /**
