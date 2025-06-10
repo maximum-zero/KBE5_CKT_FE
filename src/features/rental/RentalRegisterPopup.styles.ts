@@ -6,6 +6,13 @@ export const FormSection = styled.div`
   gap: 16px; /* 섹션 내 요소 간 간격 */
 `;
 
+export const FormTitleWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 export const FormRow = styled.div`
   display: grid;
   /* 반응형 그리드: 최소 250px 너비를 가지는 컬럼을 최대한 채워 정렬 */

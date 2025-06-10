@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react';
 import type { RentalFormData, RentalFormErrors, UseRentalRegisterReturn } from '../types';
 import { useLoading } from '@/context/LoadingContext';
 import { toast } from 'react-toastify';
+import { registerRental } from '../api/rental-api';
+import { isBefore } from '@/utils/date';
 
 /**
  * 예약 등록 폼의 데이터, 유효성 검사, 제출 로직을 추상화한 커스텀 훅입니다.
@@ -15,8 +17,8 @@ export const useRentalRegister = (): UseRentalRegisterReturn => {
   // --- 폼 데이터 상태 관리 ---
   // 예약 등록 폼의 모든 입력 필드 값을 저장합니다. 초기값은 빈 문자열입니다.
   const [formData, setFormData] = useState<RentalFormData>({
-    vehicleId: null,
-    customerId: null,
+    vehicle: null,
+    customer: null,
     pickupAt: null,
     returnAt: null,
     memo: '',
@@ -26,6 +28,26 @@ export const useRentalRegister = (): UseRentalRegisterReturn => {
   // 각 입력 필드에 대한 유효성 검사 에러 메시지를 저장합니다.
   const [errors, setErrors] = useState<RentalFormErrors>({});
 
+  // --- 내부 함수 ---
+  const validateDateRange = useCallback((currentFormData: RentalFormData) => {
+    const newErrors: RentalFormErrors = {};
+    if (currentFormData.pickupAt && currentFormData.returnAt) {
+      const today = new Date();
+      if (isBefore(currentFormData.pickupAt, today)) {
+        newErrors.pickupAt = '픽업 시간은 오늘보다 이후여야 합니다.';
+      }
+
+      if (isBefore(currentFormData.returnAt, today)) {
+        newErrors.returnAt = '반납 시간은 오늘보다 이후여야 합니다.';
+      }
+
+      if (isBefore(currentFormData.returnAt, currentFormData.pickupAt)) {
+        newErrors.returnAt = '반납 시간은 픽업 시간보다 이후여야 합니다.';
+      }
+    }
+    return newErrors;
+  }, []);
+
   // --- 핸들러 함수 정의 ---
 
   /**
@@ -34,14 +56,41 @@ export const useRentalRegister = (): UseRentalRegisterReturn => {
    * @param id 변경된 입력 필드의 ID (즉, `formData` 객체의 키)
    * @param value 변경된 입력 필드의 새 값
    */
-  const handleInputChange = useCallback((id: keyof RentalFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [id]: value })); // 특정 필드 값 업데이트
-    setErrors(prev => {
-      const newErrors = { ...prev };
-      delete newErrors[id]; // 해당 필드의 에러 메시지 제거
-      return newErrors;
-    });
-  }, []); // 이 함수는 의존성이 없으므로 마운트 시 한 번만 생성됩니다.
+  const handleInputChange = useCallback(
+    (id: keyof RentalFormData, value: unknown) => {
+      setFormData(prev => {
+        // 데이터 상태 업데이트
+        const updatedFormData = {
+          ...prev,
+          [id]: value,
+        };
+
+        // 에러 상태 업데이트
+        setErrors(prev => {
+          const newErrors = { ...prev };
+          delete newErrors[id];
+
+          // 만약 변경된 필드가 pickupAt 또는 returnAt이라면, 날짜 범위 유효성 검사 수행
+          if (id === 'pickupAt' || id === 'returnAt') {
+            const dateRangeErrors = validateDateRange(updatedFormData);
+            if (dateRangeErrors.pickupAt || dateRangeErrors.returnAt) {
+              newErrors.pickupAt = dateRangeErrors.pickupAt;
+              newErrors.returnAt = dateRangeErrors.returnAt;
+            }
+          }
+          return newErrors;
+        });
+
+        // 예약 시간 변경시 차량 초기화 로직 추가
+        if ((id === 'pickupAt' || id === 'returnAt') && updatedFormData.vehicle !== null) {
+          return { ...updatedFormData, vehicle: null };
+        }
+
+        return updatedFormData;
+      });
+    },
+    [validateDateRange]
+  );
 
   /**
    * 현재 폼 데이터의 유효성을 검사합니다.
@@ -52,9 +101,40 @@ export const useRentalRegister = (): UseRentalRegisterReturn => {
     let isValid = true;
     const newErrors: RentalFormErrors = {};
 
+    // 픽업 시간 필드의 유효성 검사
+    if (!formData.pickupAt) {
+      newErrors.pickupAt = '픽업 시간을 선택해주세요.';
+      isValid = false;
+    }
+
+    // 반납 시간 필드의 유효성 검사
+    if (!formData.returnAt) {
+      newErrors.returnAt = '반납 시간을 선택해주세요.';
+      isValid = false;
+    }
+
+    // 픽업 및 반납 추가 유효성 검사
+    const dateRangeErrors = validateDateRange(formData);
+    if (dateRangeErrors.returnAt) {
+      newErrors.returnAt = dateRangeErrors.returnAt;
+      isValid = false;
+    }
+
+    // 고객 필드의 유효성 검사
+    if (!formData.customer) {
+      newErrors.customer = '고객을 선택해주세요.';
+      isValid = false;
+    }
+
+    // 차량 필드의 유효성 검사
+    if (!formData.vehicle) {
+      newErrors.vehicle = '차량을 선택해주세요.';
+      isValid = false;
+    }
+
     setErrors(newErrors);
     return isValid;
-  }, [formData]);
+  }, [formData, validateDateRange]);
 
   /**
    * 폼 제출을 처리하는 비동기 함수입니다.
@@ -71,15 +151,15 @@ export const useRentalRegister = (): UseRentalRegisterReturn => {
 
     showLoading();
     try {
-      const requestData = {
-        vehicleId: formData.vehicleId,
-        customerId: formData.customerId,
-        pickupAt: formData.pickupAt,
-        returnAt: formData.returnAt,
+      const request = {
+        vehicleId: formData.vehicle!.id,
+        customerId: formData.customer!.id,
+        pickupAt: formData.pickupAt!.toISOString(),
+        returnAt: formData.returnAt!.toISOString(),
         memo: formData.memo,
       };
 
-      // await registerRental(requestData);
+      await registerRental(request);
       toast.success('저장되었습니다.');
       return true;
     } catch (error) {
@@ -98,8 +178,8 @@ export const useRentalRegister = (): UseRentalRegisterReturn => {
    */
   const resetForm = useCallback(() => {
     setFormData({
-      vehicleId: null,
-      customerId: null,
+      vehicle: null,
+      customer: null,
       pickupAt: null,
       returnAt: null,
       memo: '',
@@ -107,11 +187,17 @@ export const useRentalRegister = (): UseRentalRegisterReturn => {
     setErrors({});
   }, []);
 
+  // --- 조건 ---
+  const isAvailableVehicleSearch = (): boolean => {
+    return !!formData.pickupAt && !!formData.returnAt && !errors.pickupAt && !errors.returnAt;
+  };
+
   return {
     formData,
     errors,
     handleInputChange,
     handleSubmit,
     resetForm,
+    isAvailableVehicleSearch,
   };
 };

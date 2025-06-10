@@ -9,8 +9,8 @@ import type { TableHeader } from '@/components/ui/table/table/types';
  * 예약 등록 폼의 데이터 구조를 정의합니다.
  */
 export interface RentalFormData {
-  vehicleId: number | null;
-  customerId: number | null;
+  vehicle: SearchVehicleSummary | null;
+  customer: SearchCustomerSummary | null;
   pickupAt: Date | null;
   returnAt: Date | null;
   memo: string;
@@ -20,8 +20,8 @@ export interface RentalFormData {
  * 예약 등록 폼의 유효성 검사 에러 메시지 구조를 정의합니다.
  */
 export interface RentalFormErrors {
-  vehicleId?: string;
-  customerId?: string;
+  vehicle?: string;
+  customer?: string;
   pickupAt?: string;
   modelName?: string;
   returnAt?: string;
@@ -34,9 +34,10 @@ export interface RentalFormErrors {
 export interface UseRentalRegisterReturn {
   formData: RentalFormData;
   errors: RentalFormErrors;
-  handleInputChange: (id: keyof RentalFormData, value: string) => void;
+  handleInputChange: (id: keyof RentalFormData, value: unknown) => void;
   handleSubmit: () => Promise<boolean>;
   resetForm: () => void;
+  isAvailableVehicleSearch: () => boolean;
 }
 
 // --- 테이블 헤더 정의 ---
@@ -123,4 +124,40 @@ export interface RentalSummary {
   pickupAt: string;
   returnAt: string;
   memo: string;
+}
+
+export interface RegisterRentalRequest {
+  pickupAt: string;
+  returnAt: string;
+  customerId: number;
+  vehicleId: number;
+  memo: string;
+}
+
+export interface RegisterRentalResponse {
+  id: number;
+}
+
+export interface SearchCustomerResponse {
+  list: SearchCustomerSummary[];
+}
+
+export interface SearchCustomerSummary {
+  id: number;
+  customerName: string;
+  phoneNumber: string;
+  email: string;
+}
+
+export interface SearchVehicleResponse {
+  list: SearchVehicleSummary[];
+}
+
+export interface SearchVehicleSummary {
+  id: number;
+  registrationNumber: string;
+  modelName: string;
+  modelYear: string;
+  manufacturer: string;
+  fuelType: string;
 }
