@@ -34,7 +34,7 @@ export interface RentalFormErrors {
 export interface UseRentalRegisterReturn {
   formData: RentalFormData;
   errors: RentalFormErrors;
-  handleInputChange: (id: keyof RentalFormData, value: string) => void;
+  handleInputChange: (id: keyof RentalFormData, value: unknown) => void;
   handleSubmit: () => Promise<boolean>;
   resetForm: () => void;
 }
@@ -123,4 +123,24 @@ export interface RentalSummary {
   pickupAt: string;
   returnAt: string;
   memo: string;
+}
+
+export interface SearchCustomerResponse {
+  list: SearchCustomerSummary[];
+}
+
+export interface SearchCustomerSummary {
+  id: number;
+  customerName: string;
+  phoneNumber: string;
+}
+
+export interface SearchVehicleResponse {
+  list: SearchVehicleSummary[];
+}
+
+export interface SearchVehicleSummary {
+  id: string;
+  modelName: string;
+  registrationNumber: string;
 }

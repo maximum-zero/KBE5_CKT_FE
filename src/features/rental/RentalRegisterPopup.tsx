@@ -7,6 +7,11 @@ import { TextArea } from '@/components/ui/input/textarea/TextArea';
 
 import { FormFieldWrapper, FormRow, FormSection, MemoSection } from './RentalRegisterPopup.styles';
 import { useRentalRegister } from './hooks/useRentalRegister';
+import { SearchInput } from '@/components/ui/input/search/SearchInput';
+import type { SearchCustomerSummary, SearchVehicleSummary } from './types';
+import { fetchSearchCustomer, fetchSearchVehicle } from './api/rental-api';
+import type { SearchInputOption } from '@/components/ui/input/search/types';
+import { DateTimeInput } from '@/components/ui/input/date-time/DateTimeInput';
 
 // --- RentalRegisterPopup 컴포넌트의 props 인터페이스 정의 ---
 interface RentalRegisterPopupProps {
@@ -28,6 +33,53 @@ export const RentalRegisterPopup: React.FC<RentalRegisterPopupProps> = ({ isOpen
   // -----------------------------------------------------------------------
   // 핸들러 함수들
   // -----------------------------------------------------------------------
+  /**
+   * 상태(Status) 드롭다운 선택 시 필터 업데이트.
+   * @param value 선택된 상태 값 (string 또는 number)
+   */
+  const handleCustomerChange = useCallback(
+    (value: string | number | null) => {
+      console.log('value > ', value);
+
+      handleInputChange('customerId', value);
+    },
+    [handleInputChange]
+  );
+
+  /**
+   * 상태(Status) 드롭다운 선택 시 필터 업데이트.
+   * @param value 선택된 상태 값 (string 또는 number)
+   */
+  const handleVehicleChange = useCallback(
+    (value: string | number | null) => {
+      handleInputChange('vehicleId', value);
+    },
+    [handleInputChange]
+  );
+
+  const fetchedSearchCustomer = async (
+    query: string,
+    signal?: AbortSignal
+  ): Promise<SearchInputOption<SearchCustomerSummary>[]> => {
+    const response = await fetchSearchCustomer(query, signal);
+    return response.list.map((customer: SearchCustomerSummary) => ({
+      label: `${customer.customerName}`,
+      value: customer.id,
+      item: customer,
+    }));
+  };
+
+  const fetchedSearchVehicle = async (
+    query: string,
+    signal?: AbortSignal
+  ): Promise<SearchInputOption<SearchVehicleSummary>[]> => {
+    const response = await fetchSearchVehicle(query, signal);
+    return response.list.map((vehicle: SearchVehicleSummary) => ({
+      label: `${vehicle.registrationNumber}`,
+      value: vehicle.id,
+      item: vehicle,
+    }));
+  };
 
   /**
    * '등록' 버튼 클릭 시 호출되는 핸들러 함수.
@@ -71,10 +123,50 @@ export const RentalRegisterPopup: React.FC<RentalRegisterPopupProps> = ({ isOpen
       <FormSection>
         <Text type="subheading2">기본 정보</Text>
         <FormRow>
-          <FormFieldWrapper>차량 검색</FormFieldWrapper>
-          <FormFieldWrapper>사용자 검색</FormFieldWrapper>
-          <FormFieldWrapper>픽업 일자</FormFieldWrapper>
-          <FormFieldWrapper>반납 일자</FormFieldWrapper>
+          <FormFieldWrapper>
+            <SearchInput<SearchCustomerSummary>
+              id="customer-search"
+              label="사용자"
+              placeholder="사용자명를 입력하세요"
+              onChange={handleCustomerChange}
+              fetchOptions={fetchedSearchCustomer}
+              errorText={errors.customerId}
+              debounceTime={400}
+              required
+            />
+          </FormFieldWrapper>
+          <FormFieldWrapper>
+            <SearchInput<SearchVehicleSummary>
+              id="vehcle-search"
+              label="차량 등록 번호"
+              placeholder="예약할 차량 등록 번호를 입력하세요"
+              onChange={handleVehicleChange}
+              fetchOptions={fetchedSearchVehicle}
+              errorText={errors.vehicleId}
+              debounceTime={400}
+              required
+            />
+          </FormFieldWrapper>
+          <FormFieldWrapper>
+            <DateTimeInput
+              label="픽업 시간"
+              selectedDate={formData.pickupAt}
+              onDateChange={value => handleInputChange('pickupAt', value)}
+              placeholder="예약 날짜를 선택하세요"
+              errorText={errors.pickupAt}
+              required
+            />
+          </FormFieldWrapper>
+          <FormFieldWrapper>
+            <DateTimeInput
+              label="반납 시간"
+              selectedDate={formData.returnAt}
+              onDateChange={value => handleInputChange('returnAt', value)}
+              placeholder="예약 날짜를 선택하세요"
+              required
+              errorText={errors.returnAt}
+            />
+          </FormFieldWrapper>
         </FormRow>
       </FormSection>
 
