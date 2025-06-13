@@ -21,6 +21,8 @@ import SearchIcon from '@/assets/icons/ic-search.svg?react';
 import api from '@/libs/axios';
 import { CODE_SUCCESS } from '@/utils/response';
 
+import { useConfirm } from '@/hooks/useConfirm';
+
 interface Customer {
   id: number;
   customerType: string;
@@ -67,6 +69,8 @@ const RENTAL_STATUS_OPTIONS = [
 const ITEMS_PER_PAGE = 10;
 
 const CustomerManagementPage: React.FC = () => {
+  const { confirm } = useConfirm();
+
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -130,11 +134,23 @@ const CustomerManagementPage: React.FC = () => {
     setCurrentPage(page);
   }, []);
 
+  // 등록 버튼 클릭 핸들러
+  const handleResgister = useCallback(async () => {
+    await confirm({
+      title: '현재 기능이 구현되지 않았습니다.',
+      content: `담당자(송하경님)께 문의부탁드립니다.`,
+      confirmText: '갈구기',
+      cancelText: '문의',
+    });
+  }, []);
+
   return (
     <DashboardContainer>
       <TitleContainer>
         <Text type="heading">사용자 관리</Text>
-        <IconButton icon={<PlusIcon />}>사용자 추가</IconButton>
+        <IconButton icon={<PlusIcon />} onClick={handleResgister}>
+          사용자 추가
+        </IconButton>
       </TitleContainer>
 
       <FilterContainer>
@@ -177,7 +193,6 @@ const CustomerManagementPage: React.FC = () => {
             <BasicTable<Customer>
               tableHeaders={headers}
               data={customers}
-              onRowClick={row => console.log('선택된 고객:', row)}
               message={customers.length === 0 ? '검색 결과가 없습니다.' : ''}
             />
 
