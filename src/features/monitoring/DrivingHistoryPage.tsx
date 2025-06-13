@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import SearchIcon from '@/assets/icons/ic-search.svg?react';
 
@@ -10,7 +10,6 @@ import {
   FilterWrap,
   TableContainer,
   TableTitle,
-  TitleContainer as BaseTitleContainer,
 } from '@/components/layout/DashboardLayout.styles';
 
 import { IconButton } from '@/components/ui/button/IconButton';
@@ -19,32 +18,6 @@ import { TextInput } from '@/components/ui/input/input/TextInput';
 import { BasicTable } from '@/components/ui/table/table/BasicTable';
 import { DateInput } from '@/components/ui/input/date/DateInput';
 import api from '@/libs/axios';
-
-// -- 탭 네비게이션 스타일 ----------------------------------------------------
-const TitleContainer = styled(BaseTitleContainer)`
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #e5e7eb;
-  justify-content: flex-start;
-`;
-
-const TabItem = styled.div<{ active?: boolean }>`
-  font-size: 18px;
-  font-weight: 500;
-  cursor: pointer;
-  color: #6b7280;
-  padding: 8px 16px;
-  border-bottom: 2px solid transparent;
-
-  ${props =>
-    props.active &&
-    css`
-      color: #1d4ed8;
-      border-bottom: 2px solid #1d4ed8;
-    `}
-`;
 
 // -- 필터: 드롭다운 옵션 예시 ------------------------------------------------
 const VEHICLE_OPTIONS = [{ label: '전체', value: '' }];
@@ -327,12 +300,6 @@ const DrivingHistoryPage: React.FC = () => {
 
   return (
     <DashboardContainer>
-      {/* ──────────── 상단 탭 네비게이션 ──────────── */}
-      <TitleContainer>
-        <TabItem>운행일지</TabItem>
-        <TabItem active>운행내역</TabItem>
-      </TitleContainer>
-
       {/* ──────────── 필터 섹션 ──────────── */}
       <FilterContainer>
         <FilterWrap>
