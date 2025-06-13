@@ -36,20 +36,26 @@ interface Customer {
 }
 
 const headers = [
-  { label: '번호', key: 'id', width: '8%', align: 'center' },
+  { label: '번호', key: 'id', width: '60px', align: 'center' },
   { label: '이름', key: 'customerName', width: '8%', align: 'center' },
   { label: '생년월일', key: 'birthday', width: '8%', align: 'center' },
   { label: '연락처', key: 'phoneNumber', width: '15%', align: 'center' },
-  { label: '운전면허번호', key: 'licenseNumber', width: '8%', align: 'center' },
+  { label: '운전면허번호', key: 'licenseNumber', width: '10%', align: 'center' },
   { label: '주소', key: 'address', width: '15%', align: 'center' },
-  { label: '상태', key: 'status',type: 'badge',
+  {
+    label: '상태',
+    key: 'status',
+    type: 'badge',
     displayKey: 'statusName',
     valueToBadgeColorMap: {
       ACTIVE: 'green',
       WITHDRAWN: 'red',
       DORMANT: 'gray',
-    }, width: '8%', align: 'center' },
-  { label: '비고', key: 'memo', width: '30%', align: 'center' },
+    },
+    width: '8%',
+    align: 'center',
+  },
+  { label: '비고', key: 'memo', width: 'auto', align: 'center' },
 ];
 
 const RENTAL_STATUS_OPTIONS = [
@@ -92,7 +98,6 @@ const CustomerManagementPage: React.FC = () => {
       const data = response.data.data;
       setCustomers(data.list);
       setTotalPages(data.totalPages);
-
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -172,7 +177,7 @@ const CustomerManagementPage: React.FC = () => {
             <BasicTable<Customer>
               tableHeaders={headers}
               data={customers}
-              onRowClick={(row) => console.log('선택된 고객:', row)}
+              onRowClick={row => console.log('선택된 고객:', row)}
               message={customers.length === 0 ? '검색 결과가 없습니다.' : ''}
             />
 
