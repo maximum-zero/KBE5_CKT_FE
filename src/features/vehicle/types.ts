@@ -50,11 +50,44 @@ export interface UseVehicleRegisterReturn {
  */
 export interface UseDetailPanelReturn {
   selectedItem: Vehicle | null;
+  formData: VehicleUpdateFormData;
+  errors: VehicleUpdateFormErrors;
   openPanel: (id: number) => void;
   closePanel: () => void;
   isLoadingDetail: boolean;
-  handleUpdateVehicle: (data: Vehicle) => Promise<Vehicle | undefined>;
+  handleInputChange: (id: keyof VehicleUpdateFormData, value: string) => void;
+  initForm: (item: Vehicle) => void;
+  resetForm: () => void;
+  handleUpdateVehicle: () => Promise<boolean>;
   handleDeleteVehicle: () => Promise<boolean>;
+}
+
+// --- 차량 수정 폼 관련 타입 ---
+
+/**
+ * 차량 수정 폼의 데이터 구조를 정의합니다.
+ */
+export interface VehicleUpdateFormData {
+  modelYear: string;
+  manufacturer: string;
+  modelName: string;
+  batteryVoltage: string;
+  fuelType: string;
+  transmissionType: string;
+  memo: string;
+}
+
+/**
+ * 차량 수정 폼의 유효성 검사 에러 메시지 구조를 정의합니다.
+ */
+export interface VehicleUpdateFormErrors {
+  modelYear?: string;
+  manufacturer?: string;
+  modelName?: string;
+  batteryVoltage?: string;
+  fuelType?: string;
+  transmissionType?: string;
+  memo?: string;
 }
 
 // --- 테이블 헤더 정의 ---
@@ -197,4 +230,24 @@ export interface Vehicle {
   status: string;
   statusName: string;
   memo?: string;
+}
+
+/**
+ * 차량 수정 요청 (Request)의 인터페이스입니다.
+ */
+export interface UpdateVehicleRequest {
+  modelYear: string;
+  manufacturer: string;
+  modelName: string;
+  batteryVoltage: string;
+  fuelType: string;
+  transmissionType: string;
+  memo: string;
+}
+
+/**
+ * 차량 수정 응답 (Response)의 인터페이스입니다.
+ */
+export interface UpdateVehicleResponse {
+  id: number;
 }

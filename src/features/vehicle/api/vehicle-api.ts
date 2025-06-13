@@ -2,6 +2,8 @@ import api from '@/libs/axios';
 import type {
   RegisterVehicleRequest,
   RegisterVehicleResponse,
+  UpdateVehicleRequest,
+  UpdateVehicleResponse,
   Vehicle,
   VehicleListRequest,
   VehicleListResponse,
@@ -64,7 +66,7 @@ export const registerVehicle = async (data: RegisterVehicleRequest): Promise<Reg
  * @returns 수정된 차량 상세 정보
  * @throws API 호출 실패 시 에러
  */
-export const updateVehicle = async (id: number, data: RegisterVehicleRequest): Promise<Vehicle> => {
+export const updateVehicle = async (id: number, data: UpdateVehicleRequest): Promise<UpdateVehicleResponse> => {
   const response = await api.put<CommonResponse<Vehicle>>(`/api/v1/vehicles/${id}`, data);
 
   if (response.data.code !== CODE_SUCCESS) {
