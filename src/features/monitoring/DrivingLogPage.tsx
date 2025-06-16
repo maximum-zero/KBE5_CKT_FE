@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { fetchDrivingLogs } from './api/drivinglog-api';
 import { formatLocalDateTime } from '@/utils/date'
 
@@ -17,7 +17,7 @@ import { Dropdown } from '@/components/ui/input/dropdown/Dropdown';
 import { IconButton } from '@/components/ui/button/IconButton';
 import { BasicTable } from '@/components/ui/table/table/BasicTable';
 import { STATUS_OPTIONS, DRIVINGLOG_TABLE_HEADERS } from './types';
-import type { DrivingLogListRequest, DrivingLogSummary, DrivingLogSummaryExtended } from './types';
+import type { DrivingLogListRequest, DrivingLogSummary } from './types';
 
 const DrivingLogPage: React.FC = () => {
   const [dateRange, setDateRange] = useState<{ startDate: Date | null; endDate: Date | null }>({
@@ -28,8 +28,7 @@ const DrivingLogPage: React.FC = () => {
   const [VehicleRegistrationNumber, setVehicleRegistrationNumber] = useState<string>('');
   const [userName, setUserName] = useState<string>('');
   const [status, setStatus] = useState<string>('');
-  //const [drivingLogs, setDrivingLogs] = useState<DrivingLogSummary[]>([]);
-  const [drivingLogs, setDrivingLogs] = useState<DrivingLogSummaryExtended[]>([]);
+  const [drivingLogs, setDrivingLogs] = useState<DrivingLogSummary[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [page, setPage] = useState<number>(0);
@@ -51,12 +50,12 @@ const DrivingLogPage: React.FC = () => {
       };
 
       const data = await fetchDrivingLogs(params);
-      const parsedData: DrivingLogSummaryExtended[] = data.list.map((item: DrivingLogSummary) => {
+      const parsedData: DrivingLogSummary[] = data.list.map((item: DrivingLogSummary) => {
         return {
           ...item,
           startAtFormatted: formatLocalDateTime(item.startAt instanceof Date ? item.startAt.toISOString() : item.startAt),
           endAtFormatted: formatLocalDateTime(item.endAt instanceof Date ? item.endAt.toISOString() : item.endAt),
-          drivingTypeName: parsedDrivingType(item.drivingType)
+          drivingTypeName: item.statusName
         }
       });
       setDrivingLogs(parsedData);
@@ -68,9 +67,9 @@ const DrivingLogPage: React.FC = () => {
   };
 
   // 검색 버튼 클릭 핸들러
-  const handleSearchClick = () => {
-    fetchDrivingLogsData();
-  };
+  // const handleSearchClick = () => {
+  //   fetchDrivingLogsData();
+  // };
 
   // TextInput 변경 핸들러
   const handleVehicleNumberChange = (value:string) => {
@@ -96,17 +95,6 @@ const DrivingLogPage: React.FC = () => {
   const handleRowClick = (rowData: DrivingLogSummary) => {
     console.log('선택된 차량:', rowData);
   };
-
-  const parsedDrivingType = (code: string) => {
-    switch (code) {
-      case 'FOR_BUSINESS_USE':
-        return '업무용';
-      case 'FOR_COMMUTING':
-        return '출퇴근용';
-      default:
-        return '미등록';
-    }
-  }
 
   // 초기 데이터 로딩
   useEffect(() => {
