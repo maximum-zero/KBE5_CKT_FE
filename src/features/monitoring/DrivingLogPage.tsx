@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchDrivingLogs } from './api/drivinglog-api';
-import { formatLocalDateTime } from '@/utils/date'
+import { formatLocalDateTime, startOfDay, endOfDay, formatDateTime } from '@/utils/date'
 
 import SearchIcon from '@/assets/icons/ic-search.svg?react';
 import {
@@ -42,9 +42,9 @@ const DrivingLogPage: React.FC = () => {
       const params: DrivingLogListRequest = {
         vehicleNumber: VehicleRegistrationNumber || undefined,
         userName: userName || undefined,
-        startDate: dateRange.startDate ? dateRange.startDate.toISOString() : undefined,
-        endDate: dateRange.endDate ? dateRange.endDate.toISOString() : undefined,
-        drivingType: status || undefined,
+        startDate: dateRange.startDate instanceof Date ? formatDateTime(startOfDay(dateRange.startDate)) : undefined,
+        endDate: dateRange.endDate instanceof Date ? formatDateTime(endOfDay(dateRange.endDate)) : undefined,
+        type: status || undefined,
         page: page,
         size: 10,
       };
@@ -88,7 +88,7 @@ const DrivingLogPage: React.FC = () => {
   };
 
   const handleStatusChange = (value: string | number) => {
-    setStatus(value.toString());  // 항상 string으로 변환
+    setStatus(value.toString());
   };
 
   // 테이블 row 클릭 핸들러
@@ -99,7 +99,8 @@ const DrivingLogPage: React.FC = () => {
   // 초기 데이터 로딩
   useEffect(() => {
     fetchDrivingLogsData();
-  }, [userName, VehicleRegistrationNumber]);
+    console.log(status);
+  }, [userName, VehicleRegistrationNumber, status, dateRange]);
 
   return (
     <DashboardContainer>

@@ -13,6 +13,7 @@ export interface DrivingLogSummary {
   user: string;
   drivingType: string;
   drivingTypeName: string;
+  statusName: string;
   memo: string;
 }
 
@@ -53,15 +54,9 @@ export interface DrivingLogListRequest {
   size?: number;
   vehicleNumber?: string;
   userName?: string;
-  drivingType?: string;
-  startDate?: string;  // ISO 문자열
+  type?: string;
+  startDate?: string;
   endDate?: string;
-}
-
-export interface DrivingLogSummaryExtended extends DrivingLogSummary {
-  startAtFormatted: string;
-  endAtFormatted: string;
-  drivingTypeName: string;
 }
 
 export interface DrivingLogListResponse {
