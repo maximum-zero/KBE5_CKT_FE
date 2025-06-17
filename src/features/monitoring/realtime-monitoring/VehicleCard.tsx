@@ -5,16 +5,13 @@ interface VehicleCardProps {
   id: number;
   licensePlate: string;
   carInfo: string;
-  onClick?: (id: number) => void;
+  onClick?: () => void;
+  isSelected?: boolean;
 }
 
-const VehicleCard: React.FC<VehicleCardProps> = ({ id, licensePlate, carInfo, onClick }) => {
-  const handleClick = () => {
-    onClick?.(id);
-  };
-
+const VehicleCard: React.FC<VehicleCardProps> = ({ licensePlate, carInfo, onClick, isSelected }) => {
   return (
-    <CardContainer onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <CardContainer onClick={onClick} $isSelected={isSelected} style={{ cursor: 'pointer' }}>
       <CardContent>
         <LicensePlateText>{licensePlate}</LicensePlateText>
         <CarInfoText>{carInfo}</CarInfoText>

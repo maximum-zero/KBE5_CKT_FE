@@ -1,7 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+
+const COORDINATE_DIVISOR = 1000000;
+const DEFAULT_LAT = 37.5665;
+const DEFAULT_LON = 126.978;
+const DEFAULT_ZOOM_LEVEL = 12;
 
 import SearchIcon from '@/assets/icons/ic-search.svg?react';
 
@@ -23,11 +28,11 @@ import { Text } from '@/components/ui/text/Text';
 import VehicleCard from './VehicleCard';
 import api from '@/libs/axios';
 
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+const customIcon = new L.Icon({
+  iconUrl: '/icon/marker.svg',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
 });
 
 interface Vehicle {
@@ -49,6 +54,8 @@ const RealtimeMonitoringPage: React.FC = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [status, setStatus] = useState({ total: 0, running: 0, stopped: 0 });
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+  const mapRef = useRef<L.Map | null>(null);
 
   const handleSearchChange = useCallback(
     (value: string) => {
@@ -104,6 +111,16 @@ const RealtimeMonitoringPage: React.FC = () => {
     fetchStatus();
   }, []);
 
+  const handleVehicleClick = useCallback((vehicle: Vehicle) => {
+    setSelectedVehicle(vehicle);
+    if (vehicle.lat && vehicle.lon && mapRef.current) {
+      const lat = Number(vehicle.lat) / COORDINATE_DIVISOR;
+      const lon = Number(vehicle.lon) / COORDINATE_DIVISOR;
+      mapRef.current.closePopup();
+      mapRef.current.setView([lat, lon], 15);
+    }
+  }, []);
+
   return (
     <DashboardContainer>
       <HeaderContainer>
@@ -133,25 +150,33 @@ const RealtimeMonitoringPage: React.FC = () => {
               {filteredVehicles.map((vehicle, idx) => (
                 <VehicleCard
                   key={`${vehicle.vehicleId}-${idx}`}
+                  id={vehicle.vehicleId}
                   licensePlate={vehicle.registrationNumber}
                   carInfo={`${vehicle.manufacturer} ${vehicle.modelName} | ${vehicle.customerName}`}
+                  onClick={() => handleVehicleClick(vehicle)}
+                  isSelected={selectedVehicle?.vehicleId === vehicle.vehicleId}
                 />
               ))}
             </VehicleList>
           </FilterWrap>
           <MapWrap>
-            <MapContainer center={[37.5665, 126.978]} zoom={12} style={{ height: '100%', width: '100%' }}>
+            <MapContainer
+              center={[DEFAULT_LAT, DEFAULT_LON]}
+              zoom={DEFAULT_ZOOM_LEVEL}
+              style={{ height: '100%', width: '100%' }}
+              ref={mapRef}
+            >
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
               {filteredVehicles.map(vehicle => {
                 if (vehicle.lat && vehicle.lon) {
-                  const lat = Number(vehicle.lat) / 1000000;
-                  const lon = Number(vehicle.lon) / 1000000;
+                  const lat = Number(vehicle.lat) / COORDINATE_DIVISOR;
+                  const lon = Number(vehicle.lon) / COORDINATE_DIVISOR;
                   return (
-                    <Marker key={vehicle.vehicleId} position={[lat, lon]}>
-                      <Popup>
+                    <Marker key={vehicle.vehicleId} position={[lat, lon]} icon={customIcon}>
+                      <Popup closeButton={false}>
                         <div>
                           <p>차량번호: {vehicle.registrationNumber}</p>
                           <p>
