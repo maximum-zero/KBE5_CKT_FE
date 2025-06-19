@@ -23,16 +23,12 @@ export const TextArea: React.FC<TextAreaProps> = memo(
   }) => {
     const [isFocused, setIsFocused] = useState(false);
     const [currentValue, setCurrentValue] = useState<string>(value as string);
-    const isInitialRender = useRef(true);
     const debounceTimer = useRef<NodeJS.Timeout | null>(null);
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
     // value가 변경될 때마다 currentValue를 업데이트 (초기 렌더링 시에만)
     useEffect(() => {
-      if (isInitialRender.current) {
-        setCurrentValue(value as string);
-        isInitialRender.current = false;
-      }
+      setCurrentValue(value as string);
     }, [value]);
 
     // 컴포넌트 언마운트 시 디바운스 타이머 클리어
