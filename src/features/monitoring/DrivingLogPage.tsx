@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchDrivingLogs } from './api/drivinglog-api';
-import { formatLocalDateTime, startOfDay, endOfDay, formatDateTime } from '@/utils/date'
+import { formatLocalDateTime, startOfDay, endOfDay, formatDateTime } from '@/utils/date';
 
 import SearchIcon from '@/assets/icons/ic-search.svg?react';
 import {
@@ -18,6 +18,7 @@ import { IconButton } from '@/components/ui/button/IconButton';
 import { BasicTable } from '@/components/ui/table/table/BasicTable';
 import { STATUS_OPTIONS, DRIVINGLOG_TABLE_HEADERS } from './types';
 import type { DrivingLogListRequest, DrivingLogSummary } from './types';
+import { DrivingLogDetailPanel } from './DrivingLogDetailPanel';
 
 const DrivingLogPage: React.FC = () => {
   const [dateRange, setDateRange] = useState<{ startDate: Date | null; endDate: Date | null }>({
@@ -32,6 +33,8 @@ const DrivingLogPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [page, setPage] = useState<number>(0);
+  const [isDetailPanelOpen, setIsDetailPanelOpen] = useState(false);
+  const [selectedDrivingLogId, setSelectedDrivingLogId] = useState<number | null>(null);
 
   // 운행 일지 목록 가져오기
   const fetchDrivingLogsData = async () => {
@@ -53,10 +56,12 @@ const DrivingLogPage: React.FC = () => {
       const parsedData: DrivingLogSummary[] = data.list.map((item: DrivingLogSummary) => {
         return {
           ...item,
-          startAtFormatted: formatLocalDateTime(item.startAt instanceof Date ? item.startAt.toISOString() : item.startAt),
+          startAtFormatted: formatLocalDateTime(
+            item.startAt instanceof Date ? item.startAt.toISOString() : item.startAt
+          ),
           endAtFormatted: formatLocalDateTime(item.endAt instanceof Date ? item.endAt.toISOString() : item.endAt),
-          drivingTypeName: item.statusName
-        }
+          drivingTypeName: item.statusName,
+        };
       });
       setDrivingLogs(parsedData);
     } catch (err: any) {
@@ -72,17 +77,16 @@ const DrivingLogPage: React.FC = () => {
   // };
 
   // TextInput 변경 핸들러
-  const handleVehicleNumberChange = (value:string) => {
+  const handleVehicleNumberChange = (value: string) => {
     setVehicleRegistrationNumber(value);
     setPage(0);
   };
 
-  const handleUserNameChange = (value:string) => {
+  const handleUserNameChange = (value: string) => {
     setUserName(value);
     setPage(0);
   };
 
-  // 상태, 날짜 변경 핸들러
   const handleDateChange = (value: { startDate: Date | null; endDate: Date | null }) => {
     setDateRange(value);
   };
@@ -91,15 +95,19 @@ const DrivingLogPage: React.FC = () => {
     setStatus(value.toString());
   };
 
-  // 테이블 row 클릭 핸들러
   const handleRowClick = (rowData: DrivingLogSummary) => {
-    console.log('선택된 차량:', rowData);
+    setSelectedDrivingLogId(rowData.id);
+    setIsDetailPanelOpen(true);
+  };
+
+  const handleDetailPanelClose = () => {
+    setIsDetailPanelOpen(false);
+    setSelectedDrivingLogId(null);
   };
 
   // 초기 데이터 로딩
   useEffect(() => {
     fetchDrivingLogsData();
-    console.log(status);
   }, [userName, VehicleRegistrationNumber, status, dateRange]);
 
   return (
@@ -136,18 +144,9 @@ const DrivingLogPage: React.FC = () => {
               width="320px"
             />
 
-            <Dropdown
-              width="300px"
-              id="status"
-              label="상태"
-              options={STATUS_OPTIONS}
-              onSelect={handleStatusChange}
-            />
-            
+            <Dropdown width="300px" id="status" label="상태" options={STATUS_OPTIONS} onSelect={handleStatusChange} />
           </FilterContent>
-          <IconButton icon={<SearchIcon />} >
-            검색
-          </IconButton>
+          <IconButton icon={<SearchIcon />}>검색</IconButton>
         </FilterWrap>
       </FilterContainer>
 
@@ -157,9 +156,15 @@ const DrivingLogPage: React.FC = () => {
           tableHeaders={DRIVINGLOG_TABLE_HEADERS}
           data={drivingLogs}
           onRowClick={handleRowClick}
-          message={isLoading ? '로딩 중입니다...' : (error || '데이터가 없습니다.')}
-          ></BasicTable>    
+          message={isLoading ? '로딩 중입니다...' : error || '데이터가 없습니다.'}
+        ></BasicTable>
       </TableContainer>
+
+      <DrivingLogDetailPanel
+        drivingLogId={selectedDrivingLogId}
+        isOpen={isDetailPanelOpen}
+        onClose={handleDetailPanelClose}
+      />
     </DashboardContainer>
   );
 };

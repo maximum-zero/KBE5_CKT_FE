@@ -35,7 +35,7 @@ export const DRIVINGLOG_TABLE_HEADERS: TableHeader<DrivingLogSummary>[] = [
     displayKey: 'drivingTypeName',
     valueToBadgeColorMap: {
       FOR_BUSINESS_USE: 'green',
-      FOR_COMMUTING: 'red',
+      FOR_COMMUTING: 'orange',
       NOT_REGISTERED: 'gray',
     },
   },
@@ -66,3 +66,39 @@ export interface DrivingLogListResponse {
   totalElements: number;
   totalPages: number;
 }
+
+export interface DrivingLogDetailResponse {
+  drivingLogResponse: {
+    id: number;
+    VehicleModelName: string;
+    VehicleRegistrationNumber: string;
+    startAt: string;
+    endAt: string;
+    startOdometer: number;
+    endOdometer: number;
+    totalDistance: number;
+    customerName: string;
+    drivingType: string;
+    statusName: string;
+    memo: string;
+  };
+  routes: {
+    startLat: number;
+    startLon: number;
+    endLat: number;
+    endLon: number;
+    startAt: string;
+    endAt: string;
+  }[];
+}
+
+export type DrivingLogUpdateRequest = {
+  type: 'FOR_BUSINESS_USE' | 'FOR_COMMUTING' | 'NOT_REGISTERED';
+  memo: string;
+};
+
+export type DrivingLogUpdateResponse = {
+  id: number;
+  type: 'FOR_BUSINESS_USE' | 'FOR_COMMUTING' | 'NOT_REGISTERED';
+  memo: string;
+};
