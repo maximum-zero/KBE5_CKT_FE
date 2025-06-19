@@ -154,3 +154,76 @@ export const StyledActionButton = styled.button<StyledActionButtonProps>`
     fill: currentColor;
   }
 `;
+
+export const StyledMiniButton = styled.button<StyledBasicButtonProps>`
+  ${CommonButtonStyles}
+
+  /* MiniButton 고유의 작은 크기 및 패딩 오버라이드 */
+  height: 32px;
+  padding: 0 8px;
+  font-size: 13px;
+  gap: 4px;
+
+  /* StyledBasicButton의 $buttonType 로직 재활용 */
+  ${props => {
+    switch (props.$buttonType) {
+      case 'gray':
+        return css`
+          background: var(--color-gray400);
+          color: var(--color-gray600);
+          &:hover {
+            background: var(--color-gray500);
+          }
+        `;
+      case 'light-gray':
+        return css`
+          background: var(--color-gray200);
+          color: var(--color-gray600);
+          &:hover {
+            background: var(--color-gray300);
+          }
+        `;
+      case 'red':
+        return css`
+          background: var(--color-red);
+          color: var(--color-white);
+          &:hover {
+            background: var(--color-redDark);
+          }
+        `;
+      case 'basic':
+        return css`
+          background: var(--color-white);
+          color: var(--color-gray700);
+          outline: 1px var(--color-gray400) solid;
+          outline-offset: -1px;
+          &:hover {
+            background: var(--color-gray300);
+            outline: 1px solid var(--color-gray400);
+          }
+        `;
+      case 'primary':
+      default:
+        return css`
+          background: var(--color-primary);
+          color: var(--color-white);
+          &:hover {
+            background: var(--color-primaryDark);
+          }
+        `;
+    }
+  }}
+
+  // ICON 중앙 정렬
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // ICON 기본 크기 유지
+  span:first-child {
+    flex-shrink: 0;
+    flex-basis: auto;
+  }
+`;
