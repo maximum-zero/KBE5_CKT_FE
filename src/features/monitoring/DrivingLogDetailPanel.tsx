@@ -31,7 +31,6 @@ export const DrivingLogDetailPanel: React.FC<DrivingLogDetailPanelProps> = ({ dr
 
   const getBadgeColor = (currentType: string, targetType: string, isEditMode: boolean): string => {
     if (isEditMode) {
-      // 편집 모드: 선택된 배지만 색깔, 나머지는 연회색
       if (currentType === targetType) {
         switch (targetType) {
           case 'FOR_BUSINESS_USE':
@@ -42,9 +41,8 @@ export const DrivingLogDetailPanel: React.FC<DrivingLogDetailPanelProps> = ({ dr
             return 'red';
         }
       }
-      return 'gray'; // 선택 안 된 배지는 연회색ㄴ
+      return 'gray';
     } else {
-      // 읽기 모드: 현재 운행 유형에 따라 색 지정 (무조건 한 개만 선택)
       switch (currentType) {
         case 'FOR_BUSINESS_USE':
           return 'green';
@@ -106,7 +104,7 @@ export const DrivingLogDetailPanel: React.FC<DrivingLogDetailPanelProps> = ({ dr
           : prev
       );
 
-      setIsEditMode(false); // 편집 모드 해제
+      setIsEditMode(false);
     } catch (err: any) {
       console.error(err);
     }
@@ -172,16 +170,19 @@ export const DrivingLogDetailPanel: React.FC<DrivingLogDetailPanelProps> = ({ dr
           <Text type="label">운행 유형</Text>
           <BadgeContainer>
             {isEditMode
-              ? STATUS_OPTIONS.filter(option => option.value !== '').map(option => (
-                  <Badge
-                    key={option.value}
-                    $badgeColor={getBadgeColor(editedDrivingType, String(option.value), true)}
-                    onClick={() => setEditedDrivingType(String(option.value))}
-                    clickable
-                  >
-                    {option.label}
-                  </Badge>
-                ))
+              ? STATUS_OPTIONS.filter(option => option.value !== '').map(option => {
+                  const selectedType = editedDrivingType || drivingLogResponse.drivingType; // 중요!
+                  return (
+                    <Badge
+                      key={option.value}
+                      $badgeColor={getBadgeColor(selectedType, String(option.value), true)}
+                      onClick={() => setEditedDrivingType(String(option.value))}
+                      clickable
+                    >
+                      {option.label}
+                    </Badge>
+                  );
+                })
               : STATUS_OPTIONS.filter(option => option.value === drivingLogResponse.drivingType).map(option => (
                   <Badge
                     key={option.value}
