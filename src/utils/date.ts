@@ -71,3 +71,11 @@ export const startOfDay = (date: Date): Date => {
 export const endOfDay = (date: Date): Date => {
   return setMilliseconds(setSeconds(setMinutes(setHours(date, 23), 59), 59), 999);
 };
+
+export const getOnlyTime = (datetimeString: string): string => {
+  try {
+    return format(parseISO(datetimeString), 'HH:mm');
+  } catch {
+    return '';
+  }
+};
