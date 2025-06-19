@@ -6,8 +6,11 @@ export type BadgeColorType = 'primary' | 'green' | 'orange' | 'purple' | 'grey' 
  */
 export interface BadgeStyles {
   $badgeColor: BadgeColorType;
+  $clickable?: boolean;
 }
 
 export interface BadgeProps extends BadgeStyles {
   children: React.ReactNode;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  clickable?: boolean;
 }

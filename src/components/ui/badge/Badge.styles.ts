@@ -14,6 +14,7 @@ export const StyledBadge = styled.div<BadgeStyles>`
   align-items: center;
   display: flex;
   color: var(--color-white); /* 텍스트 색상은 항상 흰색이므로 여기에 직접 설정 */
+  cursor: ${({ $clickable }) => ($clickable ? 'pointer' : 'default')};
   background: ${({ $badgeColor }) => {
     switch ($badgeColor) {
       case 'primary':
