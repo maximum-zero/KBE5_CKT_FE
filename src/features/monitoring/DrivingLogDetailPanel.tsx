@@ -221,7 +221,6 @@ export const DrivingLogDetailPanel: React.FC<DrivingLogDetailPanelProps> = ({ dr
         <PanelSection>
           <Text type="subheading2">운전자 정보</Text>
           <TextInput id="customerName" label="운전자 이름" value={drivingLogResponse.customerName} disabled />
-          {drivingLogResponse.memo}
           <TextArea
             id="memo"
             label="비고"
