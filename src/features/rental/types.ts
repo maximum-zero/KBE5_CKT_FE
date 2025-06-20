@@ -40,6 +40,50 @@ export interface UseRentalRegisterReturn {
   isAvailableVehicleSearch: () => boolean;
 }
 
+/**
+ * `useDetailPanel` 훅이 반환하는 객체의 타입을 정의합니다.
+ */
+export interface UseDetailPanelReturn {
+  selectedItem: Rental | null;
+  formData: RentalUpdateFormData;
+  errors: RentalUpdateFormErrors;
+  openPanel: (id: number) => void;
+  closePanel: () => void;
+  isLoadingDetail: boolean;
+  handleInputChange: (id: keyof RentalUpdateFormData, value: unknown) => void;
+  initForm: (item: Rental) => void;
+  resetForm: () => void;
+  handleUpdateRental: () => Promise<boolean>;
+  handleUpdateRentalStatus: (status: string) => Promise<boolean>;
+  isAvailableVehicleSearch: () => boolean;
+  isStatusPending: () => boolean;
+  isStatusRented: () => boolean;
+}
+
+// --- 예약 수정 폼 관련 타입 ---
+
+/**
+ * 예약 수정 폼의 데이터 구조를 정의합니다.
+ */
+export interface RentalUpdateFormData {
+  pickupAt: Date | null;
+  returnAt: Date | null;
+  vehicle: SearchVehicleSummary | null;
+  customer: SearchCustomerSummary | null;
+  memo: string;
+}
+
+/**
+ * 예약 수정 폼의 유효성 검사 에러 메시지 구조를 정의합니다.
+ */
+export interface RentalUpdateFormErrors {
+  pickupAt?: string;
+  returnAt?: string;
+  vehicle?: string;
+  customer?: string;
+  memo?: string;
+}
+
 // --- 테이블 헤더 정의 ---
 /**
  * 예약 목록 테이블의 헤더 구성을 정의합니다.
@@ -126,6 +170,9 @@ export interface RentalSummary {
   memo: string;
 }
 
+/**
+ * 예약 저장 요청 (Request)의 인터페이스입니다.
+ */
 export interface RegisterRentalRequest {
   pickupAt: string;
   returnAt: string;
@@ -134,14 +181,23 @@ export interface RegisterRentalRequest {
   memo: string;
 }
 
+/**
+ * 예약 저장 응답 (Response)의 인터페이스입니다.
+ */
 export interface RegisterRentalResponse {
   id: number;
 }
 
+/**
+ * 고객 검색 응답 (Response)의 인터페이스입니다.
+ */
 export interface SearchCustomerResponse {
   list: SearchCustomerSummary[];
 }
 
+/**
+ * 고객 검색 DTO 인터페이스입니다.
+ */
 export interface SearchCustomerSummary {
   id: number;
   customerName: string;
@@ -149,10 +205,16 @@ export interface SearchCustomerSummary {
   email: string;
 }
 
+/**
+ * 차량 검색 응답 (Response)의 인터페이스입니다.
+ */
 export interface SearchVehicleResponse {
   list: SearchVehicleSummary[];
 }
 
+/**
+ * 차량 검색 DTO 인터페이스입니다.
+ */
 export interface SearchVehicleSummary {
   id: number;
   registrationNumber: string;
@@ -161,3 +223,66 @@ export interface SearchVehicleSummary {
   manufacturer: string;
   fuelType: string;
 }
+
+/**
+ * 단일 차량의 상세 정보 인터페이스입니다.
+ */
+export interface Rental {
+  id: number;
+  rentalStatus: string;
+  rentalStatusName: string;
+  pickupAt: string;
+  returnAt: string;
+  customer: SearchCustomerSummary;
+  vehicle: SearchVehicleSummary;
+  memo: string;
+}
+
+/**
+ * 예약 수정 요청 (Request)의 인터페이스입니다.
+ */
+export interface UpdateRentalRequest {
+  pickupAt: string;
+  returnAt: string;
+  customerId: number;
+  vehicleId: number;
+  memo: string;
+}
+
+/**
+ * 예약 메모 수정 요청 (Request)의 인터페이스입니다.
+ */
+export interface UpdateRentalMemoRequest {
+  memo: string;
+}
+
+/**
+ * 예약 수정 응답 (Response)의 인터페이스입니다.
+ */
+export interface UpdateRentalResponse {
+  id: number;
+}
+
+/**
+ * 예약 메모 수정 요청 (Request)의 인터페이스입니다.
+ */
+export interface UpdateRentalStatusRequest {
+  status: string;
+}
+
+/**
+ * 예약 수정 응답 (Response)의 인터페이스입니다.
+ */
+export interface UpdateRentalStatusResponse {
+  id: number;
+  rentalStatus: string;
+  rentalStatusName: string;
+}
+
+/**
+ * 예약 상태 정의
+ */
+export const RENTAL_STATUS_PEDING = 'PENDING';
+export const RENTAL_STATUS_RENTED = 'RENTED';
+export const RENTAL_STATUS_RETURNED = 'RETURNED';
+export const RENTAL_STATUS_CANCELED = 'CANCELED';

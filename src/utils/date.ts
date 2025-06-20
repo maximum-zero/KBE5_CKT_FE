@@ -14,6 +14,14 @@ const getSystemTimeZone = (): string => {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
 };
 
+export const getDateTime = (datetimeString: string): Date | null => {
+  if (!datetimeString) {
+    return null;
+  }
+
+  return new Date(datetimeString);
+};
+
 /**
  * ISO 8601 형식의 날짜/시간 문자열(예: "2025-06-11T17:00:00")을
  * "YYYY.MM.DD HH:mm:ss" 형식으로 변환합니다.

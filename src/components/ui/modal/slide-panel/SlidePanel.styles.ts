@@ -94,10 +94,22 @@ export const PanelSection = styled.div`
   gap: 16px;
 `;
 
+export const PanelColumnSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+`;
+
 export const PanelRowSection = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
+`;
+
+export const PanelFieldWrapper = styled.div`
+  width: 100%;
+  display: flex;
 `;
 
 export const PanelRowContainer = styled.div`
