@@ -93,7 +93,7 @@ export const DateTimeInput: React.FC<DateTimeInputProps> = ({
           dropdownMode="select"
           showTimeSelect
           timeFormat="HH:mm"
-          timeIntervals={10}
+          timeIntervals={30}
           timeCaption="시간"
           customInput={<span style={{ flexGrow: 1 }}>{formatSelectedDate()}</span>}
         />
