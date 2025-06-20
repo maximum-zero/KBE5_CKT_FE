@@ -16,13 +16,13 @@ import { Text } from '@/components/ui/text/Text';
 import { Dropdown } from '@/components/ui/input/dropdown/Dropdown';
 import { TextInput } from '@/components/ui/input/input/TextInput';
 import { DateInput } from '@/components/ui/input/date/DateInput';
-import { RENTAL_TABLE_HEADERS, STATUS_OPTIONS, type RentalSummary } from './types';
 import { useRentalList } from './hooks/useRentalList';
 import { BasicTable } from '@/components/ui/table/table/BasicTable';
 import { Pagination } from '@/components/ui/table/pagination/Pagination';
-import { RentalRegisterPopup } from './RentalRegisterPopup';
 
-import { useConfirm } from '@/hooks/useConfirm';
+import { RENTAL_TABLE_HEADERS, STATUS_OPTIONS, type RentalSummary } from './types';
+import { RentalRegisterPopup } from './RentalRegisterPopup';
+import { RentalDetailPanel } from './RentalDetailPanel';
 
 const RentalListPage: React.FC = () => {
   // -----------------------------------------------------------------------
@@ -40,10 +40,16 @@ const RentalListPage: React.FC = () => {
     setCurrentPage, // 현재 페이지를 업데이트하는 함수
     refetch, // 데이터 다시 불러오는 함수
   } = useRentalList();
-  const { confirm } = useConfirm();
 
+  // -----------------------------------------------------------------------
+  // 팝업 및 패널 UI 상태 관리
+  // -----------------------------------------------------------------------
   // 예약 등록 팝업 제어
   const [isRegisterPopupOpen, setIsRegisterPopupOpen] = useState(false);
+
+  // 예약 상세 패널 제어 (선택된 예약 ID에 따라 상세 정보 표시)
+  const [isDetailPanelOpen, setIsDetailPanelOpen] = useState(false);
+  const [selectedRentalId, setSelectedRentalId] = useState<number | null>(null);
 
   // -----------------------------------------------------------------------
   // 핸들러 함수들
@@ -102,13 +108,8 @@ const RentalListPage: React.FC = () => {
    * @param rowData 클릭된 예약의 요약 정보 (RentalSummary)
    */
   const handleRowClick = useCallback(async (rowData: RentalSummary) => {
-    console.log('선택된 row > ', rowData);
-    await confirm({
-      title: '현재 기능이 구현되지 않았습니다.',
-      content: `담당자(최대영님)께 문의부탁드립니다.`,
-      confirmText: '갈구기',
-      cancelText: '문의',
-    });
+    setSelectedRentalId(rowData.id);
+    setIsDetailPanelOpen(true);
   }, []);
 
   /**
@@ -119,7 +120,7 @@ const RentalListPage: React.FC = () => {
   }, []);
 
   /**
-   * 예약 등록 팝업 닫기 핸들러. 등록 성공 시 차량 목록을 새로고침합니다.
+   * 예약 등록 팝업 닫기 핸들러. 등록 성공 시 예약 목록을 새로고침합니다.
    * @param success 등록 작업 성공 여부
    */
   const handleRegisterPopupClose = useCallback(
@@ -131,6 +132,21 @@ const RentalListPage: React.FC = () => {
     },
     [refetch]
   );
+
+  /**
+   * 예약 상세 패널 닫기 핸들러. 선택된 예약 ID를 초기화합니다.
+   */
+  const handleDetailPanelClose = useCallback(() => {
+    setIsDetailPanelOpen(false);
+    setSelectedRentalId(null);
+  }, []);
+
+  /**
+   * 예약 상세 패널에서 저장 성공 시 예약 목록을 새로고침합니다.
+   */
+  const handleDetailPanelSaveSuccess = useCallback(() => {
+    refetch(); // 상세 정보 저장 성공 시 데이터 새로고침
+  }, [refetch]);
 
   // -----------------------------------------------------------------------
   // 렌더링
@@ -173,7 +189,7 @@ const RentalListPage: React.FC = () => {
               type="text"
               id="keyword-input"
               label="검색어"
-              placeholder="차량번호 또는 고객명 입력"
+              placeholder="예약번호 또는 고객명 입력"
               icon={<SearchIcon />}
               value={filters.keyword || ''}
               onChange={handleKeywordChange}
@@ -214,6 +230,14 @@ const RentalListPage: React.FC = () => {
 
       {/* 예약 등록 팝업 컴포넌트 */}
       <RentalRegisterPopup isOpen={isRegisterPopupOpen} onClose={handleRegisterPopupClose} />
+
+      {/* 예약 상세 슬라이드 패널 컴포넌트 */}
+      <RentalDetailPanel
+        rentalId={selectedRentalId}
+        isOpen={isDetailPanelOpen}
+        onClose={handleDetailPanelClose}
+        onSuccessSave={handleDetailPanelSaveSuccess}
+      />
     </DashboardContainer>
   );
 };
