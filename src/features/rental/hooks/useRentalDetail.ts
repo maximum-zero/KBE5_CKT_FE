@@ -105,14 +105,17 @@ export const useDetailPanel = (): UseDetailPanelReturn => {
 
       try {
         const data = await getRentalDetail(selectedItemId);
-        console.log('data > ', data);
-
         setSelectedItem(data);
       } catch (error) {
-        console.error('예약 상세 조회 실패:', error);
-
+        if (error instanceof APIError) {
+          const errorMessage = error.message ?? '오류가 발생했습니다. 다시 시도해주세요.';
+          console.error('예약 상세 조회 실패:', errorMessage);
+          toast.error(errorMessage);
+        } else {
+          console.error('예약 상세 조회 실패:', error);
+          toast.error('오류가 발생했습니다. 다시 시도해주세요.');
+        }
         closePanel();
-        toast.error('오류가 발생했습니다. 다시 시도해주세요.');
       } finally {
         setIsLoadingDetail(false);
       }

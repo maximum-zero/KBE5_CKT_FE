@@ -4,6 +4,7 @@ import { useLoading } from '@/context/LoadingContext';
 import { toast } from 'react-toastify';
 import { registerRental } from '../api/rental-api';
 import { isBefore } from '@/utils/date';
+import { APIError } from '@/utils/response';
 
 /**
  * 예약 등록 폼의 데이터, 유효성 검사, 제출 로직을 추상화한 커스텀 훅입니다.
@@ -163,9 +164,14 @@ export const useRentalRegister = (): UseRentalRegisterReturn => {
       toast.success('저장되었습니다.');
       return true;
     } catch (error) {
-      console.error('예약 등록 실패:', error);
-
-      toast.error('오류가 발생했습니다. 다시 시도해주세요.');
+      if (error instanceof APIError) {
+        const errorMessage = error.message ?? '오류가 발생했습니다. 다시 시도해주세요.';
+        console.error('예약 등록 실패:', errorMessage);
+        toast.error(errorMessage);
+      } else {
+        console.error('예약 등록 실패:', error);
+        toast.error('오류가 발생했습니다. 다시 시도해주세요.');
+      }
       return false;
     } finally {
       hideLoading();
