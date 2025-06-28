@@ -229,6 +229,8 @@ export interface Vehicle {
   transmissionType: string;
   status: string;
   statusName: string;
+  lat?: number;
+  lon?: number;
   memo?: string;
 }
 
