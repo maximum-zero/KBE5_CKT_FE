@@ -50,6 +50,7 @@ export interface UseVehicleRegisterReturn {
  */
 export interface UseDetailPanelReturn {
   selectedItem: Vehicle | null;
+  geoAddress: string | null;
   formData: VehicleUpdateFormData;
   errors: VehicleUpdateFormErrors;
   openPanel: (id: number) => void;
@@ -226,7 +227,9 @@ export interface Vehicle {
   modelName: string;
   batteryVoltage?: string;
   fuelType: string;
+  fuelTypeName: string;
   transmissionType: string;
+  transmissionTypeName: string;
   status: string;
   statusName: string;
   lat?: number;

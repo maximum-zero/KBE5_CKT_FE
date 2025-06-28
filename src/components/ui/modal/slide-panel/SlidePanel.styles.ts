@@ -153,8 +153,10 @@ export const MapWrap = styled.div`
   display: flex;
   width: 100%;
   height: 300px;
+  background: var(--color-gray300, #e2e8f0);
   justify-content: center;
   align-items: center;
+  color: #64748b;
   font-size: 16px;
   border-radius: 8px;
 `;
