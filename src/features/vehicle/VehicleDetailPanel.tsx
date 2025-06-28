@@ -316,7 +316,7 @@ export const VehicleDetailPanel: React.FC<VehicleDetailPanelProps> = ({
           <Text type="subheading2">기술 정보</Text>
           {renderPanelRow(
             '배터리 전력',
-            selectedItem.batteryVoltage,
+            selectedItem.batteryVoltage + 'kWh',
             <TextInput
               id="batteryVoltage"
               value={formData.batteryVoltage ?? ''}
