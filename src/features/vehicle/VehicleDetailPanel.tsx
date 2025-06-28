@@ -38,7 +38,7 @@ const customIcon = new L.Icon({
   popupAnchor: [0, -32],
 });
 
-const DEFAULT_ZOOM_LEVEL = 12;
+const DEFAULT_ZOOM_LEVEL = 16;
 
 // --- VehicleDetailPanel 컴포넌트 props ---
 interface VehicleDetailPanelProps {
@@ -65,6 +65,7 @@ export const VehicleDetailPanel: React.FC<VehicleDetailPanelProps> = ({
   // -----------------------------------------------------------------------
   const {
     selectedItem,
+    geoAddress,
     formData,
     errors,
     openPanel,
@@ -327,7 +328,7 @@ export const VehicleDetailPanel: React.FC<VehicleDetailPanelProps> = ({
           )}
           {renderPanelRow(
             '연료 유형',
-            selectedItem.fuelType,
+            selectedItem.fuelTypeName,
             <Dropdown
               id="fuelType"
               options={FUEL_TYPE_OPTIONS}
@@ -340,7 +341,7 @@ export const VehicleDetailPanel: React.FC<VehicleDetailPanelProps> = ({
           )}
           {renderPanelRow(
             '변속기',
-            selectedItem.transmissionType,
+            selectedItem.transmissionTypeName,
             <Dropdown
               id="transmissionType"
               options={TRANSMISSION_TYPE_OPTIONS}
@@ -371,14 +372,15 @@ export const VehicleDetailPanel: React.FC<VehicleDetailPanelProps> = ({
                 <Marker key={selectedItem.id} position={[selectedItem.lat, selectedItem.lon]} icon={customIcon} />
               </MapContainer>
             ) : (
-              <MapWrap>없음</MapWrap>
+              <MapWrap>위치를 찾을 수 없습니다.</MapWrap>
             )}
+
+            {geoAddress && <TextInput id="address" label="주소" value={geoAddress} disabled />}
           </PanelSection>
         </AnimatedSection>
 
         {/* --- 추가 정보 섹션 --- */}
         <PanelSection>
-          <Text type="subheading2">추가 정보</Text>
           <AnimatedSection $isVisible={isEditMode} $maxHeight="200px">
             <TextArea
               id="memo"
