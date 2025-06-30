@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { fetchDrivingLogs } from '../api/drivinglog-api';
-import { formatLocalDateTime, startOfDay, endOfDay, formatDateTime } from '@/utils/date';
+import { formatDateTime } from '@/utils/date';
 
 import SearchIcon from '@/assets/icons/ic-search.svg?react';
 import {
@@ -48,8 +48,8 @@ const DrivingLogPage: React.FC = () => {
       const params: DrivingLogListRequest = {
         vehicleNumber: VehicleRegistrationNumber || undefined,
         userName: userName || undefined,
-        startDate: dateRange.startDate instanceof Date ? formatDateTime(startOfDay(dateRange.startDate)) : undefined,
-        endDate: dateRange.endDate instanceof Date ? formatDateTime(endOfDay(dateRange.endDate)) : undefined,
+        startDate: formatDateTime(dateRange.startDate, 'yyyyMMddHHmmss'),
+        endDate: formatDateTime(dateRange.endDate, 'yyyyMMddHHmmss'),
         type: status || undefined,
         page: page - 1,
         size: 10,
@@ -62,10 +62,8 @@ const DrivingLogPage: React.FC = () => {
           startOdometer: (formatCommas(item.startOdometer) ?? '0') + ' km',
           endOdometer: (formatCommas(item.endOdometer) ?? '0') + ' km',
           totalDistance: (formatCommas(item.totalDistance) ?? '0') + ' km',
-          startAtFormatted: formatLocalDateTime(
-            item.startAt instanceof Date ? item.startAt.toISOString() : item.startAt
-          ),
-          endAtFormatted: formatLocalDateTime(item.endAt instanceof Date ? item.endAt.toISOString() : item.endAt),
+          startAtFormatted: formatDateTime(new Date(item.startAt)),
+          endAtFormatted: formatDateTime(new Date(item.endAt)),
         };
       });
       setDrivingLogs(parsedData);
@@ -85,12 +83,12 @@ const DrivingLogPage: React.FC = () => {
   // TextInput 변경 핸들러
   const handleVehicleNumberChange = (value: string) => {
     setVehicleRegistrationNumber(value);
-    setPage(0);
+    setPage(1);
   };
 
   const handleUserNameChange = (value: string) => {
     setUserName(value);
-    setPage(0);
+    setPage(1);
   };
 
   const handleDateChange = (value: { startDate: Date | null; endDate: Date | null }) => {
