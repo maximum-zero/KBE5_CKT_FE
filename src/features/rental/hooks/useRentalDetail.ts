@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 
 import { useLoading } from '@/context/LoadingContext';
 import { APIError } from '@/utils/response';
-import { getDateTime, isBefore } from '@/utils/date';
+import { formatDateTime, getDateTime, isBefore } from '@/utils/date';
 
 import {
   RENTAL_STATUS_CANCELED,
@@ -231,8 +231,8 @@ export const useDetailPanel = (): UseDetailPanelReturn => {
         const requestData = {
           vehicleId: formData.vehicle!.id,
           customerId: formData.customer!.id,
-          pickupAt: formData.pickupAt!.toISOString(),
-          returnAt: formData.returnAt!.toISOString(),
+          pickupAt: formatDateTime(formData.pickupAt, 'yyyy-MM-dd HH:mm:ss')!,
+          returnAt: formatDateTime(formData.returnAt, 'yyyy-MM-dd HH:mm:ss')!,
           memo: formData.memo,
         };
 
