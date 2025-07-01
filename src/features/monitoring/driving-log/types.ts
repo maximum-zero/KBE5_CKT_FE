@@ -67,6 +67,11 @@ export interface DrivingLogListResponse {
   totalPages: number;
 }
 
+export type LatLng = {
+  lat: string;
+  lon: string;
+};
+
 export interface DrivingLogDetailResponse {
   drivingLogResponse: {
     id: number;
@@ -89,6 +94,7 @@ export interface DrivingLogDetailResponse {
     endLon: number;
     startAt: string;
     endAt: string;
+    traceLogs: LatLng[];
   }[];
 }
 

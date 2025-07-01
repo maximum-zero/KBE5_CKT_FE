@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
+import { toast } from 'react-toastify';
+
 import type { DrivingLogDetailResponse, DrivingLogUpdateRequest } from './types';
 import { STATUS_OPTIONS } from './types';
 import { getDrivingLogDetail, updateDrivingLog } from '../api/drivinglog-api';
@@ -14,6 +16,7 @@ import { Badge } from '@/components/ui/badge/Badge';
 import { TextInput } from '@/components/ui/input/input/TextInput';
 import { Text } from '@/components/ui/text/Text';
 import { TextArea } from '@/components/ui/input/textarea/TextArea';
+import RouteMap from './components/RouteMap';
 
 interface DrivingLogDetailPanelProps {
   drivingLogId: number | null;
@@ -148,6 +151,10 @@ export const DrivingLogDetailPanel: React.FC<DrivingLogDetailPanelProps> = ({ dr
         console.log(result);
       } catch (err: any) {
         setError(err.message);
+        setData(null);
+        setEditedMemo('');
+
+        toast.error('오류가 발생했습니다. 다시 시도해주세요.');
       }
     };
 
@@ -231,32 +238,40 @@ export const DrivingLogDetailPanel: React.FC<DrivingLogDetailPanelProps> = ({ dr
             disabled={!isEditMode}
           />
         </PanelSection>
-        <PanelSection>
-          <Text type="subheading2">운행 경로</Text>
-          <TimelineWrapper>
-            <TimelineHeader>
-              <DotWithLabel>
-                <DotGreen />
-                <LabelText>시동 ON</LabelText>
-              </DotWithLabel>
-              <DotWithLabel>
-                <LabelText>시동 OFF</LabelText>
-                <DotRed />
-              </DotWithLabel>
-            </TimelineHeader>
+        {!isEditMode && (
+          <PanelSection>
+            <Text type="subheading2">운행 경로</Text>
+            <TimelineWrapper>
+              <TimelineHeader>
+                <DotWithLabel>
+                  <DotGreen />
+                  <LabelText>시동 ON</LabelText>
+                </DotWithLabel>
+                <DotWithLabel>
+                  <LabelText>시동 OFF</LabelText>
+                  <DotRed />
+                </DotWithLabel>
+              </TimelineHeader>
 
-            {routes.map((route, index) => (
-              <TimelineItem key={index}>
-                <Side>
-                  <TimeTextGreen>{getOnlyTime(route.startAt)}</TimeTextGreen>
-                </Side>
-                <Side align="right">
-                  <TimeTextRed>{getOnlyTime(route.endAt)}</TimeTextRed>
-                </Side>
-              </TimelineItem>
-            ))}
-          </TimelineWrapper>
-        </PanelSection>
+              {routes.map((route, index) => (
+                <TimelineItem key={index}>
+                  <TimeRow>
+                    <Side>
+                      <TimeTextGreen>{getOnlyTime(route.startAt)}</TimeTextGreen>
+                    </Side>
+                    <Side align="right">
+                      <TimeTextRed>{getOnlyTime(route.endAt)}</TimeTextRed>
+                    </Side>
+                  </TimeRow>
+                </TimelineItem>
+              ))}
+
+              <div>
+                <RouteMap traceLogs={routes.flatMap(route => route.traceLogs)} />
+              </div>
+            </TimelineWrapper>
+          </PanelSection>
+        )}
       </PanelWrapper>
     </SlidePanel>
   );
@@ -275,17 +290,16 @@ const TimelineWrapper = styled.div`
 
 const TimelineItem = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
   position: relative;
-  padding: 0 100px;
+  gap: 8px;
 `;
 
 const Side = styled.div<{ align?: 'right' }>`
   display: flex;
   flex-direction: column;
   align-items: ${({ align }) => (align === 'right' ? 'flex-end' : 'flex-start')};
-  gap: 8px; // 더 여유
+  padding: 0 100px;
 `;
 
 const DotWithLabel = styled.div`
@@ -328,4 +342,9 @@ const TimelineHeader = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0 90px;
+`;
+
+const TimeRow = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
