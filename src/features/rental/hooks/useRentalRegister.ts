@@ -3,7 +3,7 @@ import type { RentalFormData, RentalFormErrors, UseRentalRegisterReturn } from '
 import { useLoading } from '@/context/LoadingContext';
 import { toast } from 'react-toastify';
 import { registerRental } from '../api/rental-api';
-import { isBefore } from '@/utils/date';
+import { formatDateTime, isBefore } from '@/utils/date';
 import { APIError } from '@/utils/response';
 
 /**
@@ -155,8 +155,8 @@ export const useRentalRegister = (): UseRentalRegisterReturn => {
       const request = {
         vehicleId: formData.vehicle!.id,
         customerId: formData.customer!.id,
-        pickupAt: formData.pickupAt!.toISOString(),
-        returnAt: formData.returnAt!.toISOString(),
+        pickupAt: formatDateTime(formData.pickupAt, 'yyyy-MM-dd HH:mm:ss')!,
+        returnAt: formatDateTime(formData.returnAt, 'yyyy-MM-dd HH:mm:ss')!,
         memo: formData.memo,
       };
 

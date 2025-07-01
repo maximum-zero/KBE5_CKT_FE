@@ -101,7 +101,6 @@ export const useRentalList = (options?: UseRentalListOptions): UseRentalListResu
         // 요청할 페이지 번호 계산 (API는 0-based 인덱스를 사용할 수 있으므로 -1)
         const pageToFetch = (options?.page !== undefined ? options.page : currentPage) - 1;
         const filtersToApply = { ...filters, ...(options?.filters || {}) };
-        console.log('filtersToApply > ', filtersToApply);
 
         // API 호출
         const response = await fetchRentals({
@@ -142,7 +141,7 @@ export const useRentalList = (options?: UseRentalListOptions): UseRentalListResu
       return {
         ...item,
         pickupAt: formatLocalDateTime(item.pickupAt),
-        returnAt: formatLocalDateTime(item.pickupAt),
+        returnAt: formatLocalDateTime(item.returnAt),
         memo: item.memo ?? '',
       };
     });
