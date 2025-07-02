@@ -334,7 +334,7 @@ const DrivingHistoryPage: React.FC = () => {
   return (
     <DashboardContainer>
       <TitleContainer>
-        <Text type="heading">운행 일지</Text>
+        <Text type="heading">통계</Text>
       </TitleContainer>
 
       {/* ──────────── 필터 섹션 ──────────── */}
