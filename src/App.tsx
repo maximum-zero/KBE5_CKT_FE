@@ -11,7 +11,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 // 레이아웃
 import DashboardLayout from '@/layouts/DashboardLayout';
-import MonitoringLayout from '@/features/monitoring/layout/MonitoringLayout';
 
 // 페이지
 import LoginPage from '@/features/auth/LoginPage';
@@ -48,12 +47,11 @@ function App() {
               <Route element={<DashboardLayout title="차칸 관제시스템" />}>
                 <Route path="/" element={<RealtimeMonitoringPage />} />
 
-                <Route path="/monitoring">
-                  <Route element={<MonitoringLayout />}>
-                    <Route index element={<DrivingLogPage />} />
-                    <Route path="driving-log" element={<DrivingLogPage />} />
-                    <Route path="driving-history" element={<DrivingHistoryPage />} />
-                  </Route>
+                <Route path="/driving-log">
+                  <Route index element={<DrivingLogPage />} />
+                </Route>
+                <Route path="/driving-history">
+                  <Route index element={<DrivingHistoryPage />} />
                 </Route>
 
                 <Route path="/vehicle">

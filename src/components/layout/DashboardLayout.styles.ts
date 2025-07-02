@@ -5,15 +5,15 @@ export const DashboardContainer = styled.section`
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 24px;
 `;
 
 export const TitleContainer = styled.section`
+  padding: 24px;
   width: 100%;
-  height: 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid var(--color-gray300);
 `;
 
 export const FilterContainer = styled.section`
@@ -21,10 +21,8 @@ export const FilterContainer = styled.section`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background-color: var(--color-white);
-  border: 1px solid var(--color-gray300);
-  border-radius: 8px;
-  padding: 16px;
+  border-bottom: 1px solid var(--color-gray300);
+  padding: 16px 24px;
 `;
 
 export const FilterTitle = styled.div`
@@ -48,6 +46,7 @@ export const FilterContent = styled.div`
 `;
 
 export const TableContainer = styled.section`
+  padding: 24px;
   width: 100%;
   display: flex;
   flex-direction: column;

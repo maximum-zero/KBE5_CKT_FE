@@ -2,12 +2,26 @@ import React, { useState } from 'react';
 import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-import { LayoutMain, LayoutHeader, Logo, MainNavigation } from './DashboardLayout.styles';
+import {
+  LayoutMain,
+  Lnb,
+  LnbTopContainer,
+  LnbBottomContainer,
+  Logo,
+  MainNavigation,
+  MainContainer,
+} from './DashboardLayout.styles';
 import type { LayoutProps } from './types';
-import { DASHBOARD_NAV_ITEMS } from './constants';
 
 import UserCircle from '@/components/ui/circle/UserCircle';
 import type { UserInfo } from '@/components/ui/circle/types';
+
+import { LuMonitor } from 'react-icons/lu';
+import { LuCar } from 'react-icons/lu';
+import { LuUsers } from 'react-icons/lu';
+import { LuGauge } from 'react-icons/lu';
+import { LuCalendarCheck } from 'react-icons/lu';
+import { LuChartBar } from 'react-icons/lu';
 
 const DashboardLayout: React.FC<LayoutProps> = ({ title }) => {
   const navigate = useNavigate();
@@ -27,32 +41,77 @@ const DashboardLayout: React.FC<LayoutProps> = ({ title }) => {
 
   return (
     <LayoutMain>
-      <LayoutHeader>
-        <MotionLogo to="/" whileHover={{ scale: 1.03 }} transition={{ type: 'spring', stiffness: 400, damping: 10 }}>
-          <img src="/icon/logo.svg" alt={title} />
-          {title}
-        </MotionLogo>
-        <MainNavigation>
-          {DASHBOARD_NAV_ITEMS.map(tab => (
+      <Lnb>
+        <LnbTopContainer>
+          <MotionLogo to="/" whileHover={{ scale: 1.03 }} transition={{ type: 'spring', stiffness: 400, damping: 10 }}>
+            <img src="/icon/logo.svg" alt={title} />
+            {title}
+          </MotionLogo>
+          <MainNavigation>
             <NavLink
-              key={tab.key}
-              to={tab.path}
+              to="/"
+              className={() => {
+                return location.pathname === '/' ? 'active' : '';
+              }}
+            >
+              <LuMonitor size={18} />
+              실시간 관제
+            </NavLink>
+            <NavLink
+              to="/vehicle"
               className={({ isActive }) => {
-                if (tab.path === '/') {
-                  return location.pathname === '/' ? 'active' : '';
-                }
                 return isActive ? 'active' : '';
               }}
             >
-              {tab.label}
+              <LuCar size={18} />
+              차량 관리
             </NavLink>
-          ))}
-        </MainNavigation>
+            <NavLink
+              to="/customers"
+              className={({ isActive }) => {
+                return isActive ? 'active' : '';
+              }}
+            >
+              <LuUsers size={18} />
+              사용자 관리
+            </NavLink>
+            <NavLink
+              to="/rental"
+              className={({ isActive }) => {
+                return isActive ? 'active' : '';
+              }}
+            >
+              <LuCalendarCheck size={18} />
+              예약 관리
+            </NavLink>
+            <NavLink
+              to="/driving-log"
+              className={({ isActive }) => {
+                return isActive ? 'active' : '';
+              }}
+            >
+              <LuGauge size={18} />
+              운행 일지
+            </NavLink>
+            <NavLink
+              to="/driving-history"
+              className={({ isActive }) => {
+                return isActive ? 'active' : '';
+              }}
+            >
+              <LuChartBar size={18} />
+              통계
+            </NavLink>
+          </MainNavigation>
+        </LnbTopContainer>
+        <LnbBottomContainer>
+          <UserCircle userInfo={currentUser} onLogout={handleLogout} />
+        </LnbBottomContainer>
+      </Lnb>
 
-        <UserCircle userInfo={currentUser} onLogout={handleLogout} />
-      </LayoutHeader>
-
-      <Outlet />
+      <MainContainer>
+        <Outlet />
+      </MainContainer>
     </LayoutMain>
   );
 };
