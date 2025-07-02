@@ -73,15 +73,15 @@ const transformCustomerData = (data: CustomerApiResponse): CustomerTableData => 
 
 const HeaderContainer = styled.div`
   display: flex;
-  gap: 24px;
-  width: 100%;
+  gap: 12px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--color-gray300);
 `;
 
 const TableHeaderRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
 `;
 
 const TabButton = styled.button<{ selected: boolean }>`
@@ -90,6 +90,7 @@ const TabButton = styled.button<{ selected: boolean }>`
   background: ${({ selected }) => (selected ? 'var(--color-primary)' : 'var(--color-white)')};
   color: ${({ selected }) => (selected ? 'var(--color-white)' : 'var(--color-gray800)')};
   border-radius: 6px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -295,7 +296,6 @@ const CustomerListPage: React.FC = () => {
       </HeaderContainer>
 
       <FilterContainer>
-        <Text type="subheading2">고객 검색</Text>
         <FilterWrap>
           <FilterContent>
             <Dropdown

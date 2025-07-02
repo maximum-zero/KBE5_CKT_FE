@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-import { UserCircleContainer, Circle, UserMenuDropdown } from './UserCircle.styles';
+import { UserCircleContainer, Info, Circle, Logout } from './UserCircle.styles';
 import type { UserCircleProps } from './types';
+
+import { LuLogOut } from 'react-icons/lu';
 
 const UserCircle: React.FC<UserCircleProps> = ({ userInfo, onLogout }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -36,7 +38,8 @@ const UserCircle: React.FC<UserCircleProps> = ({ userInfo, onLogout }) => {
     }
   };
 
-  const handleLogoutClick = () => {
+  const handleLogoutClick = (event: any) => {
+    event.preventDefault();
     setIsDropdownOpen(false);
 
     if (onLogout && userInfo) {
@@ -54,18 +57,16 @@ const UserCircle: React.FC<UserCircleProps> = ({ userInfo, onLogout }) => {
       aria-expanded={isDropdownOpen}
       tabIndex={0}
     >
-      {userName && <span>{userName}</span>}
-      <Circle>{firstLetter}</Circle>
+      <Info>
+        <Circle>{firstLetter}</Circle>
+        {userName && <span>{userName}</span>}
+      </Info>
 
-      {isDropdownOpen && (
-        <UserMenuDropdown role="menu">
-          <ul>
-            <li onClick={handleLogoutClick} role="menuitem">
-              로그아웃
-            </li>
-          </ul>
-        </UserMenuDropdown>
-      )}
+      <Logout>
+        <a onClick={handleLogoutClick}>
+          <LuLogOut size={18} />
+        </a>
+      </Logout>
     </UserCircleContainer>
   );
 };

@@ -10,6 +10,7 @@ import {
   FilterContent,
   TableContainer,
   TableTitle,
+  TitleContainer,
 } from '@/components/layout/DashboardLayout.styles';
 import { TextInput } from '@/components/ui/input/input/TextInput';
 import { DateInput } from '@/components/ui/input/date/DateInput';
@@ -21,6 +22,7 @@ import type { DrivingLogListRequest, DrivingLogSummary } from './types';
 import { DrivingLogDetailPanel } from './DrivingLogDetailPanel';
 import { Pagination } from '@/components/ui/table/pagination/Pagination';
 import { formatCommas } from '@/utils/common';
+import { Text } from '@/components/ui/text/Text';
 
 const DrivingLogPage: React.FC = () => {
   const [dateRange, setDateRange] = useState<{ startDate: Date | null; endDate: Date | null }>({
@@ -115,6 +117,10 @@ const DrivingLogPage: React.FC = () => {
 
   return (
     <DashboardContainer>
+      <TitleContainer>
+        <Text type="heading">운행 일지</Text>
+      </TitleContainer>
+
       <FilterContainer>
         <FilterWrap>
           <FilterContent>

@@ -163,7 +163,6 @@ const RentalListPage: React.FC = () => {
 
       {/* 검색 필터 섹션 */}
       <FilterContainer>
-        <Text type="subheading2">예약 검색 필터</Text>
         <FilterWrap>
           <FilterContent>
             {/* 상태 드롭다운 필터 */}

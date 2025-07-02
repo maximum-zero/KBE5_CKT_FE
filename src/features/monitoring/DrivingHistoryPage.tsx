@@ -20,6 +20,7 @@ import { BasicTable } from '@/components/ui/table/table/BasicTable';
 import { DateInput } from '@/components/ui/input/date/DateInput';
 import api from '@/libs/axios';
 import { formatCommas } from '@/utils/common';
+import { Text } from '@/components/ui/text/Text';
 
 const VEHICLE_OPTIONS = [{ label: '전체', value: '' }];
 
@@ -332,6 +333,10 @@ const DrivingHistoryPage: React.FC = () => {
 
   return (
     <DashboardContainer>
+      <TitleContainer>
+        <Text type="heading">통계</Text>
+      </TitleContainer>
+
       {/* ──────────── 필터 섹션 ──────────── */}
       <FilterContainer>
         <FilterWrap>

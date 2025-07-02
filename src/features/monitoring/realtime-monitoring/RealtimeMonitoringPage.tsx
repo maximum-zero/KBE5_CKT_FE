@@ -9,7 +9,7 @@ const DEFAULT_ZOOM_LEVEL = 12;
 
 import SearchIcon from '@/assets/icons/ic-search.svg?react';
 
-import { DashboardContainer } from '@/components/layout/DashboardLayout.styles';
+import { DashboardContainer, TitleContainer } from '@/components/layout/DashboardLayout.styles';
 import { StatCard } from '@/components/ui/card/StatCard';
 import { TextInput } from '@/components/ui/input/input/TextInput';
 
@@ -125,6 +125,10 @@ const RealtimeMonitoringPage: React.FC = () => {
 
   return (
     <DashboardContainer>
+      <TitleContainer>
+        <Text type="heading">실시간 관제</Text>
+      </TitleContainer>
+
       <HeaderContainer>
         <StatCard label="전체 차량" count={status.total} unit="대" unitColor="blue" />
         <StatCard label="운행중 차량" count={status.running} unit="대" unitColor="green" />
