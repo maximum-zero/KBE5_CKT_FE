@@ -58,6 +58,24 @@ const DashboardLayout: React.FC<LayoutProps> = ({ title }) => {
               실시간 관제
             </NavLink>
             <NavLink
+              to="/driving-log"
+              className={({ isActive }) => {
+                return isActive ? 'active' : '';
+              }}
+            >
+              <LuGauge size={18} />
+              운행 일지
+            </NavLink>
+            <NavLink
+              to="/driving-history"
+              className={({ isActive }) => {
+                return isActive ? 'active' : '';
+              }}
+            >
+              <LuChartBar size={18} />
+              통계
+            </NavLink>
+            <NavLink
               to="/vehicle"
               className={({ isActive }) => {
                 return isActive ? 'active' : '';
@@ -83,24 +101,6 @@ const DashboardLayout: React.FC<LayoutProps> = ({ title }) => {
             >
               <LuCalendarCheck size={18} />
               예약 관리
-            </NavLink>
-            <NavLink
-              to="/driving-log"
-              className={({ isActive }) => {
-                return isActive ? 'active' : '';
-              }}
-            >
-              <LuGauge size={18} />
-              운행 일지
-            </NavLink>
-            <NavLink
-              to="/driving-history"
-              className={({ isActive }) => {
-                return isActive ? 'active' : '';
-              }}
-            >
-              <LuChartBar size={18} />
-              통계
             </NavLink>
           </MainNavigation>
         </LnbTopContainer>
