@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 
 export const HeaderContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  display: flex;
+  gap: 12px;
+  padding: 12px 24px;
 `;
 
 export const ContentContainer = styled.div`
+  padding: 12px 24px;
   width: 100%;
   height: 100%;
   flex-direction: column;
@@ -23,7 +25,7 @@ export const TitleWrap = styled.div`
 
 export const ContentWrap = styled.div`
   width: 100%;
-  height: calc(100vh - 288px);
+  height: 100%;
   display: flex;
   gap: 16px;
 `;
@@ -31,7 +33,6 @@ export const ContentWrap = styled.div`
 export const FilterWrap = styled.div`
   width: 350px;
   height: 100%;
-  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -70,4 +71,5 @@ export const VehicleList = styled.div`
 export const MapWrap = styled.div`
   flex: 1;
   background-color: var(--color-white);
+  border-radius: 8px;
 `;

@@ -40,7 +40,6 @@ const getUnitDisplayColor = (theme: StatCardValueColor) => {
 export const StatCardContainer = styled.div`
   align-self: stretch;
   width: 100%;
-  height: 100px;
   padding: 16px;
   background: white;
   border-radius: 12px;

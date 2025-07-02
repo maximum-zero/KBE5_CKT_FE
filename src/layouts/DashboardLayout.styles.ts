@@ -16,7 +16,7 @@ export const Lnb = styled.aside`
   justify-content: space-between;
   min-width: 260px;
   height: 100vh;
-  box-shadow: 4px 0 12px 0 rgba(0, 0, 0, 0.15);
+  box-shadow: 2px 10px 12px 0 rgba(0, 0, 0, 0.15);
 `;
 
 export const LnbTopContainer = styled.div`
