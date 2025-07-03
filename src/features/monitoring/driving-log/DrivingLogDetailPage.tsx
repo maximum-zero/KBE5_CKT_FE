@@ -11,6 +11,53 @@ import { Text } from '@/components/ui/text/Text';
 import RouteMap from './components/RouteMap';
 import { formatCommas } from '@/utils/common';
 
+type LatLng = {
+  lat: number;
+  lon: number;
+};
+
+const getAddressFromCoord = async (lat: number, lon: number): Promise<string> => {
+  const url = `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${lon}&y=${lat}`;
+  const response = await fetch(url, {
+    headers: {
+      Authorization: `KakaoAK ${import.meta.env.VITE_KAKAO_MAP_REST_API_KEY}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('카카오 주소 변환 실패');
+  }
+
+  const data = await response.json();
+  const address = data.documents?.[0]?.address?.address_name;
+
+  return address;
+};
+
+const CoordinateToAddress: React.FC<LatLng> = ({ lat, lon }) => {
+  const [address, setAddress] = useState('');
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const addr = await getAddressFromCoord(lat, lon);
+
+        if (!addr) {
+          setAddress('좌표에 해당하는 주소가 없습니다.');
+        } else {
+          setAddress(addr);
+        }
+      } catch (err) {
+        console.error(err);
+        setAddress('주소를 불러올 수 없습니다.');
+      }
+    };
+    fetch();
+  }, [lat, lon]);
+
+  return <div>{address}</div>;
+};
+
 export const DrivingLogDetailPage: React.FC = () => {
   const { id } = useParams();
   const drivingLogId = Number(id);
@@ -96,11 +143,11 @@ export const DrivingLogDetailPage: React.FC = () => {
               </RouteTimeRow>
               <LatLonRow>
                 <Label>시작 위치</Label>
-                <Value>{`${route.startLat.toFixed(6)}, ${route.startLon.toFixed(6)}`}</Value>
+                <CoordinateToAddress lat={route.startLat} lon={route.startLon} />
               </LatLonRow>
               <LatLonRow>
                 <Label>종료 위치</Label>
-                <Value>{`${route.endLat.toFixed(6)}, ${route.endLon.toFixed(6)}`}</Value>
+                <CoordinateToAddress lat={route.endLat} lon={route.endLon} />
               </LatLonRow>
             </RouteBox>
           ))}
@@ -122,14 +169,14 @@ const PageLayout = styled.div`
 `;
 
 const LeftColumn = styled.div`
-  flex: 0 0 450px;
+  flex: 0 0 500px;
   overflow-y: auto;
-  padding: 2rem;
+  padding: 2rem 1rem 2rem 2rem;
 `;
 
 const RightColumn = styled.div`
   flex: 1;
-  padding: 2rem 1rem;
+  padding: 1rem;
 `;
 
 const Section = styled.div`
@@ -138,7 +185,6 @@ const Section = styled.div`
 
 const Row = styled.div`
   display: flex;
-  gap: 1rem;
 `;
 
 const VerticalList = styled.div`
@@ -155,7 +201,6 @@ const ItemRow = styled.div`
 
 const Label = styled.span`
   font-weight: 500;
-  color: #666;
 `;
 
 const Value = styled.span`
