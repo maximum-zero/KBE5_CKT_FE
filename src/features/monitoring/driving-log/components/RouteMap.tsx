@@ -33,7 +33,7 @@ const RouteMap = ({ traceLogs }: RouteMapProps) => {
       center={center}
       zoom={12}
       scrollWheelZoom={true}
-      style={{ height: '300px', width: '100%', borderRadius: '8px', marginTop: '1rem' }}
+      style={{ height: '100%', width: '100%', borderRadius: '8px', marginTop: '1rem' }}
     >
       <ChangeMapCenter center={center} />
 

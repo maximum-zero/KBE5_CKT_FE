@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchDrivingLogs } from '../api/drivinglog-api';
 import { formatDateTime } from '@/utils/date';
 
@@ -14,32 +15,26 @@ import {
 } from '@/components/layout/DashboardLayout.styles';
 import { TextInput } from '@/components/ui/input/input/TextInput';
 import { DateInput } from '@/components/ui/input/date/DateInput';
-import { Dropdown } from '@/components/ui/input/dropdown/Dropdown';
-import { IconButton } from '@/components/ui/button/IconButton';
 import { BasicTable } from '@/components/ui/table/table/BasicTable';
-import { STATUS_OPTIONS, DRIVINGLOG_TABLE_HEADERS } from './types';
+import { DRIVINGLOG_TABLE_HEADERS } from './types';
 import type { DrivingLogListRequest, DrivingLogSummary } from './types';
-import { DrivingLogDetailPanel } from './DrivingLogDetailPanel';
 import { Pagination } from '@/components/ui/table/pagination/Pagination';
 import { formatCommas } from '@/utils/common';
 import { Text } from '@/components/ui/text/Text';
 
 const DrivingLogPage: React.FC = () => {
+  const navigate = useNavigate();
   const [dateRange, setDateRange] = useState<{ startDate: Date | null; endDate: Date | null }>({
     startDate: null,
     endDate: null,
   });
 
   const [VehicleRegistrationNumber, setVehicleRegistrationNumber] = useState<string>('');
-  const [userName, setUserName] = useState<string>('');
-  const [status, setStatus] = useState<string>('');
   const [drivingLogs, setDrivingLogs] = useState<DrivingLogSummary[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [isDetailPanelOpen, setIsDetailPanelOpen] = useState(false);
-  const [selectedDrivingLogId, setSelectedDrivingLogId] = useState<number | null>(null);
 
   // 운행 일지 목록 가져오기
   const fetchDrivingLogsData = useCallback(async () => {
@@ -49,10 +44,8 @@ const DrivingLogPage: React.FC = () => {
 
       const params: DrivingLogListRequest = {
         vehicleNumber: VehicleRegistrationNumber || undefined,
-        userName: userName || undefined,
         startDate: formatDateTime(dateRange.startDate, 'yyyyMMddHHmmss'),
         endDate: formatDateTime(dateRange.endDate, 'yyyyMMddHHmmss'),
-        type: status || undefined,
         page: page - 1,
         size: 10,
       };
@@ -75,7 +68,7 @@ const DrivingLogPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [page, userName, VehicleRegistrationNumber, status, dateRange]);
+  }, [page, VehicleRegistrationNumber, dateRange]);
 
   // 페이지 변경 핸들러
   const handlePageChange = useCallback((page: number) => {
@@ -88,27 +81,12 @@ const DrivingLogPage: React.FC = () => {
     setPage(1);
   };
 
-  const handleUserNameChange = (value: string) => {
-    setUserName(value);
-    setPage(1);
-  };
-
   const handleDateChange = (value: { startDate: Date | null; endDate: Date | null }) => {
     setDateRange(value);
   };
 
-  const handleStatusChange = (value: string | number) => {
-    setStatus(value.toString());
-  };
-
   const handleRowClick = (rowData: DrivingLogSummary) => {
-    setSelectedDrivingLogId(rowData.id);
-    setIsDetailPanelOpen(true);
-  };
-
-  const handleDetailPanelClose = () => {
-    setIsDetailPanelOpen(false);
-    setSelectedDrivingLogId(null);
+    navigate(`/driving-log/${rowData.id}`);
   };
 
   useEffect(() => {
@@ -120,7 +98,6 @@ const DrivingLogPage: React.FC = () => {
       <TitleContainer>
         <Text type="heading">운행 일지</Text>
       </TitleContainer>
-
       <FilterContainer>
         <FilterWrap>
           <FilterContent>
@@ -134,16 +111,6 @@ const DrivingLogPage: React.FC = () => {
               onChange={handleVehicleNumberChange}
             />
 
-            <TextInput
-              width="300px"
-              type="text"
-              id="username-input"
-              label="사용자"
-              icon={<SearchIcon />}
-              value={userName}
-              onChange={handleUserNameChange}
-            />
-
             <DateInput
               id="my-date-input"
               label="기간 설정"
@@ -152,10 +119,7 @@ const DrivingLogPage: React.FC = () => {
               onDateChange={handleDateChange}
               width="320px"
             />
-
-            <Dropdown width="300px" id="status" label="상태" options={STATUS_OPTIONS} onSelect={handleStatusChange} />
           </FilterContent>
-          <IconButton icon={<SearchIcon />}>검색</IconButton>
         </FilterWrap>
       </FilterContainer>
 
@@ -170,12 +134,6 @@ const DrivingLogPage: React.FC = () => {
 
         <Pagination currentPage={page} totalPages={totalPages} onPageChange={handlePageChange} pageBlockSize={10} />
       </TableContainer>
-
-      <DrivingLogDetailPanel
-        drivingLogId={selectedDrivingLogId}
-        isOpen={isDetailPanelOpen}
-        onClose={handleDetailPanelClose}
-      />
     </DashboardContainer>
   );
 };
