@@ -105,6 +105,19 @@ export const VehicleDetailPanel: React.FC<VehicleDetailPanelProps> = ({
   // -----------------------------------------------------------------------
 
   /**
+   * 애뮬레이터 시동을 위한 페이지로 이동합니다.
+   */
+  const handleNavigateToEmulator = useCallback(() => {
+    const baseUrl = import.meta.env.VITE_EMULATOR_SERVICE_URL;
+    if (baseUrl && selectedItem?.id) {
+      const targetUrl = `${baseUrl}/emulator/${selectedItem?.id}`;
+      window.open(targetUrl, '_blank');
+    } else {
+      toast.error('시동을 할 수 없습니다.');
+    }
+  }, [selectedItem]);
+
+  /**
    * '편집' 버튼 클릭 시 편집 모드로 전환합니다.
    */
   const handleEdit = useCallback(() => {
@@ -194,6 +207,9 @@ export const VehicleDetailPanel: React.FC<VehicleDetailPanelProps> = ({
 
     return (
       <>
+        <BasicButton onClick={handleNavigateToEmulator} buttonType="basic">
+          시동 체험
+        </BasicButton>
         {isEditMode ? (
           <>
             <BasicButton onClick={handleCancel} buttonType="basic">
