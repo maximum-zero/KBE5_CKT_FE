@@ -123,6 +123,14 @@ export const DrivingLogDetailPage: React.FC = () => {
               <Value>{driveDuration}</Value>
             </ItemRow>
             <ItemRow>
+              <Label>출발 계기판</Label>
+              <Value>{formatCommas(drivingLogResponse.startOdometer) + ' km'}</Value>
+            </ItemRow>
+            <ItemRow>
+              <Label>도착 계기판</Label>
+              <Value>{formatCommas(drivingLogResponse.endOdometer) + ' km'}</Value>
+            </ItemRow>
+            <ItemRow>
               <Label>총 주행 거리</Label>
               <Value>{formatCommas(drivingLogResponse.totalDistance)} km</Value>
             </ItemRow>

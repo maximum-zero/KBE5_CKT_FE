@@ -13,13 +13,11 @@ export interface DrivingLogSummary {
 }
 
 export const DRIVINGLOG_TABLE_HEADERS: TableHeader<DrivingLogSummary>[] = [
-  { label: '모델', key: 'vehicleModelName', width: '12%', align: 'center' },
-  { label: '차량 번호', key: 'vehicleRegistrationNumber', width: '12%', align: 'center' },
-  { label: '시작 시간', key: 'startAtFormatted', width: '15%', align: 'center' },
-  { label: '종료 시간', key: 'endAtFormatted', width: '15%', align: 'center' },
-  { label: '출발 계기판', key: 'startOdometer', width: '12%', align: 'center' },
-  { label: '도착 계기판', key: 'endOdometer', width: '12%', align: 'center' },
-  { label: '총 주행거리', key: 'totalDistance', width: '12%', align: 'center' },
+  { label: '모델', key: 'vehicleModelName', width: '15%', align: 'center' },
+  { label: '차량 번호', key: 'vehicleRegistrationNumber', width: '15%', align: 'center' },
+  { label: '시작 시간', key: 'startAtFormatted', width: '20%', align: 'center' },
+  { label: '종료 시간', key: 'endAtFormatted', width: '20%', align: 'center' },
+  { label: '총 주행거리', key: 'totalDistance', width: '15%', align: 'center' },
   { label: '사용자', key: 'customerName', width: 'auto', align: 'center' },
 ];
 

@@ -54,8 +54,6 @@ const DrivingLogPage: React.FC = () => {
       const parsedData: DrivingLogSummary[] = data.list.map((item: DrivingLogSummary) => {
         return {
           ...item,
-          startOdometer: (formatCommas(item.startOdometer) ?? '0') + ' km',
-          endOdometer: (formatCommas(item.endOdometer) ?? '0') + ' km',
           totalDistance: (formatCommas(item.totalDistance) ?? '0') + ' km',
           startAtFormatted: formatDateTime(new Date(item.startAt)),
           endAtFormatted: formatDateTime(new Date(item.endAt)),
