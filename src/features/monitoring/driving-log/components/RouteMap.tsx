@@ -13,6 +13,7 @@ type RouteMapProps = {
 
 const RouteMap = ({ traceLogs }: RouteMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
+  const DEFAULT_MAP_LEVEL = 5;
 
   useEffect(() => {
     if (!traceLogs.length || !window.kakao || !mapRef.current) return;
@@ -26,7 +27,7 @@ const RouteMap = ({ traceLogs }: RouteMapProps) => {
 
       const map = new window.kakao.maps.Map(mapRef.current, {
         center,
-        level: 5,
+        level: DEFAULT_MAP_LEVEL,
       });
 
       const polyline = new window.kakao.maps.Polyline({
@@ -38,19 +39,18 @@ const RouteMap = ({ traceLogs }: RouteMapProps) => {
       });
       polyline.setMap(map);
 
-      // 지도 영역 자동 조절
       const bounds = new window.kakao.maps.LatLngBounds();
       points.forEach(p => bounds.extend(p));
       map.setBounds(bounds);
 
-      // 출발 마커 (녹색)
+      // 출발 마커
       new window.kakao.maps.Marker({
         position: points[0],
         map,
         image: new window.kakao.maps.MarkerImage('/icon/startmarker.svg', new window.kakao.maps.Size(50, 50)),
       });
 
-      // 도착 마커 (빨간색 핀 기본 마커)
+      // 도착 마커
       new window.kakao.maps.Marker({
         position: points[points.length - 1],
         map,

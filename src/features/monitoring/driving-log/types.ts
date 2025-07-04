@@ -45,8 +45,8 @@ export type LatLng = {
 export interface DrivingLogDetailResponse {
   drivingLogResponse: {
     id: number;
-    VehicleModelName: string;
-    VehicleRegistrationNumber: string;
+    vehicleModelName: string;
+    vehicleRegistrationNumber: string;
     startAt: string;
     endAt: string;
     startOdometer: number;

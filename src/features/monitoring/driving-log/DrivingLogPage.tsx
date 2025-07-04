@@ -29,7 +29,7 @@ const DrivingLogPage: React.FC = () => {
     endDate: null,
   });
 
-  const [VehicleRegistrationNumber, setVehicleRegistrationNumber] = useState<string>('');
+  const [vehicleRegistrationNumber, setVehicleRegistrationNumber] = useState<string>('');
   const [drivingLogs, setDrivingLogs] = useState<DrivingLogSummary[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
@@ -43,7 +43,7 @@ const DrivingLogPage: React.FC = () => {
       setError('');
 
       const params: DrivingLogListRequest = {
-        vehicleNumber: VehicleRegistrationNumber || undefined,
+        vehicleNumber: vehicleRegistrationNumber || undefined,
         startDate: formatDateTime(dateRange.startDate, 'yyyyMMddHHmmss'),
         endDate: formatDateTime(dateRange.endDate, 'yyyyMMddHHmmss'),
         page: page - 1,
@@ -66,7 +66,7 @@ const DrivingLogPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [page, VehicleRegistrationNumber, dateRange]);
+  }, [page, vehicleRegistrationNumber, dateRange]);
 
   // 페이지 변경 핸들러
   const handlePageChange = useCallback((page: number) => {
@@ -105,7 +105,7 @@ const DrivingLogPage: React.FC = () => {
               id="vehiclenumber-input"
               label="차량번호"
               icon={<SearchIcon />}
-              value={VehicleRegistrationNumber}
+              value={vehicleRegistrationNumber}
               onChange={handleVehicleNumberChange}
             />
 

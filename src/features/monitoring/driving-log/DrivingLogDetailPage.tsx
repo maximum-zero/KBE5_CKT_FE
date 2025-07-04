@@ -103,7 +103,7 @@ export const DrivingLogDetailPage: React.FC = () => {
         <Section>
           <Text type="subheading2">차량 번호</Text>
           <Row>
-            <Text type="heading2">{drivingLogResponse.VehicleRegistrationNumber}</Text>
+            <Text type="heading2">{drivingLogResponse.vehicleRegistrationNumber}</Text>
           </Row>
         </Section>
 
