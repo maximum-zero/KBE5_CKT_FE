@@ -45,7 +45,6 @@ interface CustomerTableData {
   joinDate: string;
   status: '활성' | '비활성';
   type: 'INDIVIDUAL' | 'CORPORATE';
-  index?: number;
 }
 
 const statusMap: Record<string, CustomerTableData['status']> = {
@@ -149,7 +148,6 @@ const statusBadgeMap = {
 };
 
 const personalTableHeaders = [
-  { label: '번호', key: 'index', width: '60px' },
   { label: '이름', key: 'name', width: '100px' },
   { label: '연락처', key: 'phone', width: '130px' },
   { label: '생년월일', key: 'birth', width: '110px' },
@@ -160,7 +158,6 @@ const personalTableHeaders = [
 ];
 
 const corporateTableHeaders = [
-  { label: '번호', key: 'index', width: '60px' },
   { label: '이름', key: 'name', width: '120px' },
   { label: '연락처', key: 'phone', width: '130px' },
   { label: '이메일', key: 'email', width: '200px' },
@@ -184,17 +181,18 @@ const CustomerListPage: React.FC = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [summary, setSummary] = useState({ total: 0, individual: 0, corporate: 0, renting: 0 });
 
-  useEffect(() => {
-    const fetchSummary = async () => {
-      try {
-        const response = await api.get('/api/v1/customers/summary');
-        setSummary(response.data.data);
-      } catch (err) {
-        console.error('고객 요약 정보 조회 실패:', err);
-      }
-    };
-    fetchSummary();
+  const fetchSummaryData = useCallback(async () => {
+    try {
+      const response = await api.get('/api/v1/customers/summary');
+      setSummary(response.data.data);
+    } catch (err) {
+      console.error('고객 요약 정보 조회 실패:', err);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchSummaryData();
+  }, [fetchSummaryData]);
 
   const fetchCustomers = useCallback(async () => {
     setIsLoading(true);
@@ -216,6 +214,7 @@ const CustomerListPage: React.FC = () => {
             index: customerList.length - idx,
           }))
         );
+        // setCustomers(customerList.map(transformCustomerData));
       } else {
         setCustomers([]);
       }
@@ -230,6 +229,11 @@ const CustomerListPage: React.FC = () => {
   useEffect(() => {
     fetchCustomers();
   }, [fetchCustomers]);
+
+  const refreshData = useCallback(() => {
+    fetchSummaryData();
+    fetchCustomers();
+  }, [fetchSummaryData, fetchCustomers]);
 
   const handleTypeSelect = useCallback((value: 'INDIVIDUAL' | 'CORPORATE') => {
     setType(value);
@@ -265,7 +269,6 @@ const CustomerListPage: React.FC = () => {
             c.phone.includes(filters.keyword) ||
             c.email.includes(filters.keyword))
       );
-    console.log(`[데이터 필터링] 타입: ${type}, 필터 후 데이터 수: ${data.length}`);
     return data;
   }, [customers, type, filters]);
 
@@ -338,8 +341,6 @@ const CustomerListPage: React.FC = () => {
           data={pagedData}
           message={tableMessage}
           onRowClick={row => {
-            console.log('클릭한 row:', row);
-            console.log('상태', row.status);
             navigate(`/customers/${row.id}`);
           }}
         />
@@ -359,7 +360,7 @@ const CustomerListPage: React.FC = () => {
           key={type}
           type={type}
           onClose={() => setIsCreateModalOpen(false)}
-          onSuccess={fetchCustomers}
+          onSuccess={refreshData}
         />
       )}
     </DashboardContainer>
