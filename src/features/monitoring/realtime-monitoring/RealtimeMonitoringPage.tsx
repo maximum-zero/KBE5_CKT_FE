@@ -1,14 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
-const DEFAULT_LAT = 37.5665;
-const DEFAULT_LON = 126.978;
-const DEFAULT_ZOOM_LEVEL = 12;
-const OVERLAY_X_ANCHOR = 0.5;
-const OVERLAY_Y_ANCHOR = 1.5;
-const OVERLAY_Z_INDEX = 100;
-const FOCUSED_ZOOM_LEVEL = 3;
-const GPS_COORDINATE_SCALE = 1_000_000;
-
 import SearchIcon from '@/assets/icons/ic-search.svg?react';
 
 import { DashboardContainer, TitleContainer } from '@/components/layout/DashboardLayout.styles';
@@ -29,6 +20,18 @@ import api from '@/libs/axios';
 
 import { useSse } from './useSse';
 
+const DEFAULT_LAT = 37.5665;
+const DEFAULT_LON = 126.978;
+const DEFAULT_ZOOM_LEVEL = 12;
+const OVERLAY_X_ANCHOR = 0.5;
+const OVERLAY_Y_ANCHOR = 1.5;
+const OVERLAY_Z_INDEX = 100;
+const FOCUSED_ZOOM_LEVEL = 3;
+const GPS_COORDINATE_SCALE = 1_000_000;
+const SSE_EVENT_NAME_GPS_ON = 'gps-on';
+const SSE_EVENT_NAME_GPS_OFF = 'gps-off';
+const SSE_EVENT_NAME_GPS_UPDATE = 'gps-update';
+
 interface Vehicle {
   vehicleId: number;
   registrationNumber: string;
@@ -40,8 +43,6 @@ interface Vehicle {
   ang: string | null;
   stolen: boolean;
 }
-
-const VEHICLE_REFRESH_INTERVAL = Number(import.meta.env.VITE_VEHICLE_REFRESH_INTERVAL || 60000);
 
 const RealtimeMonitoringPage: React.FC = () => {
   const [search, setSearch] = useState('');
@@ -55,65 +56,156 @@ const RealtimeMonitoringPage: React.FC = () => {
   const infoWindowRef = useRef<any>(null);
   const clustererRef = useRef<any>(null);
 
-  const handleGpsUpdate = useCallback(data => {
+  const getMarker = (isStolen: boolean) => {
+    return isStolen ? '/icon/stolenCar.svg' : '/icon/marker.svg';
+  };
+
+  const setLocation = (lat: number, lon: number) => {
     const kakao = (window as any).kakao;
-    if (!kakao || !kakao.maps || !data?.mdn || !data?.lat || !data?.lon) return;
+    return new kakao.maps.LatLng(lat / GPS_COORDINATE_SCALE, lon / GPS_COORDINATE_SCALE);
+  };
 
-    const lat = Number(data.lat) / GPS_COORDINATE_SCALE;
-    const lon = Number(data.lon) / GPS_COORDINATE_SCALE;
+  const isValidGpsData = (data: any): boolean => {
+    return data && data.vehicleId && typeof data.lat === 'number' && typeof data.lon === 'number';
+  };
 
-    // 차량 번호(mdn) 기준으로 기존 마커 찾기
-    const existingMarker = markersRef.current.find(marker => marker.getTitle?.() === data.mdn);
-    if (existingMarker) {
-      existingMarker.setPosition(new kakao.maps.LatLng(lat, lon));
-    } else {
-      const newMarker = new kakao.maps.Marker({
-        position: new kakao.maps.LatLng(lat, lon),
-        title: data.mdn,
-        image: new kakao.maps.MarkerImage('/icon/marker.svg', new kakao.maps.Size(32, 32), {
-          offset: new kakao.maps.Point(16, 32),
-        }),
-        map: kakaoMapRef.current,
-      });
-      markersRef.current.push(newMarker);
-    }
-  }, []);
+  const handleGpsOn = useCallback(
+    (data: any) => {
+      if (!isValidGpsData(data)) return;
 
-  // useSse 훅을 사용하여 SSE 연결 관리
-  useSse('gps-update', handleGpsUpdate);
-
-  const filterVehicles = useCallback(
-    (value: string) => {
-      if (value.length === 0) {
-        return vehicles;
+      // 차량 목록 및 상태 변경
+      const existingVehicle = vehicles.some(vehicle => vehicle.vehicleId === data.vehicleId);
+      if (!existingVehicle) {
+        const newVehicle = [...vehicles, data];
+        setVehicles(newVehicle);
+        setStatus(prev => {
+          return {
+            total: prev.total,
+            running: prev.running + 1,
+            stolen: prev.stolen + (data.stolen ? 1 : 0),
+            stopped: Math.max(prev.stopped - 1, 0),
+          };
+        });
       }
-      return vehicles.filter(vehicle => vehicle.registrationNumber.toLowerCase().includes(value.toLowerCase()));
+
+      // 마커 변경
+      const existingMarker = markersRef.current.some(marker => marker.getTitle?.() === data.vehicleId.toString());
+      if (!existingMarker) {
+        const kakao = (window as any).kakao;
+        const marker = new kakao.maps.Marker({
+          position: setLocation(data.lat, data.lon),
+          title: data.vehicleId,
+          image: new kakao.maps.MarkerImage(getMarker(data.isStolen), new kakao.maps.Size(32, 32), {
+            offset: new kakao.maps.Point(16, 32),
+          }),
+          map: kakaoMapRef.current,
+        });
+        markersRef.current.push(marker);
+      }
+    },
+    [vehicles, markersRef, kakaoMapRef]
+  );
+
+  const handleGpsOff = useCallback(
+    (data: any) => {
+      if (!data?.vehicleId) return;
+
+      // 차량 목록 변경
+      const existingVehicle = vehicles.some(vehicle => vehicle.vehicleId === data.vehicleId);
+      if (existingVehicle) {
+        const newVehicle = vehicles.filter(vehicle => vehicle.vehicleId !== data.vehicleId);
+        setVehicles(newVehicle);
+        setStatus(prev => {
+          return {
+            total: prev.total,
+            running: Math.max(prev.running - 1, 0),
+            stolen: Math.max(prev.stolen - (data.stolen ? 1 : 0), 0),
+            stopped: prev.stopped + 1,
+          };
+        });
+      }
+
+      // 마커 변경
+      const markerIndex = markersRef.current.findIndex(marker => marker.getTitle?.() === data.vehicleId.toString());
+      if (markerIndex < 0) {
+        const marker = markersRef.current[markerIndex];
+        marker.setMap(null);
+        markersRef.current.splice(markerIndex, 1);
+      }
+
+      // 선택된 항목이 있으면 제거
+      if (selectedVehicle === data.vehicleId) {
+        setSelectedVehicle(null);
+      }
+    },
+    [vehicles, selectedVehicle]
+  );
+
+  const handleGpsUpdate = useCallback(
+    (data: any) => {
+      if (!isValidGpsData(data)) return;
+
+      // 차량 목록 변경
+      const existingVehicle = vehicles.some(vehicle => vehicle.vehicleId === data.vehicleId);
+      if (existingVehicle) {
+        const newVehicle = vehicles.map(vehicle => {
+          if (vehicle.vehicleId === data.vehicleId) {
+            return {
+              ...vehicle,
+              lat: data.lat,
+              lon: data.lon,
+              spd: data.spd,
+            };
+          }
+          return vehicle;
+        });
+        setVehicles(newVehicle);
+      }
+
+      // 차량 번호(mdn) 기준으로 기존 마커 찾기
+      const existingMarker = markersRef.current.find(marker => marker.getTitle?.() === data.vehicleId.toString());
+      if (existingMarker) {
+        const kakao = (window as any).kakao;
+        existingMarker.setPosition(new kakao.maps.LatLng(data.lat, data.lon));
+      }
     },
     [vehicles]
   );
 
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      setSearch(value);
-      setFilteredVehicles(filterVehicles(value));
-    },
-    [vehicles, filterVehicles]
-  );
+  // useSse 훅을 사용하여 SSE 연결 관리
+  useSse(SSE_EVENT_NAME_GPS_ON, handleGpsOn);
+  useSse(SSE_EVENT_NAME_GPS_OFF, handleGpsOff);
+  useSse(SSE_EVENT_NAME_GPS_UPDATE, handleGpsUpdate);
+
+  const handleSearchChange = useCallback((value: string) => {
+    setSearch(value);
+  }, []);
+
+  useEffect(() => {
+    if (search.length === 0) {
+      setFilteredVehicles(vehicles);
+    }
+    const newVehicles = vehicles.filter(vehicle =>
+      vehicle.registrationNumber.toLowerCase().includes(search.toLowerCase())
+    );
+    setFilteredVehicles(newVehicles);
+  }, [vehicles, search]);
+
+  useEffect(() => {
+    const findVehicle = vehicles.find(vehicle => vehicle.vehicleId === selectedVehicle?.vehicleId);
+    if (findVehicle) {
+      setSelectedVehicle(findVehicle);
+
+      const kakao = (window as any).kakao;
+      kakaoMapRef.current.setCenter(new kakao.maps.LatLng(findVehicle.lat, findVehicle.lon));
+    }
+  }, [vehicles, selectedVehicle]);
 
   const fetchVehicles = useCallback(async () => {
     try {
       const response = await api.get('/api/v1/tracking/vehicles/location');
       if (response.data.code === '000' && Array.isArray(response.data.data)) {
         setVehicles(response.data.data);
-        setFilteredVehicles(response.data.data);
-
-        const runningCount = (response.data.data ?? []).length;
-        setStatus({
-          total: status.total,
-          running: runningCount,
-          stolen: status.stolen,
-          stopped: status.total - runningCount - status.stolen,
-        });
       } else {
         setVehicles([]);
       }
@@ -123,28 +215,22 @@ const RealtimeMonitoringPage: React.FC = () => {
     }
   }, []);
 
-  // 차량 정보 주기적 업데이트
+  const fetchStatus = useCallback(async () => {
+    try {
+      const response = await api.get('/api/v1/tracking/status');
+      if (response.data.code === '000' && response.data.data) {
+        setStatus(response.data.data);
+      }
+    } catch (error) {
+      console.error('차량 상태 조회 실패:', error);
+      setStatus({ total: 0, running: 0, stolen: 0, stopped: 0 });
+    }
+  }, []);
+
+  // 차량 정보 및 상태 최초 호출
   useEffect(() => {
     fetchVehicles();
-    const interval = setInterval(fetchVehicles, VEHICLE_REFRESH_INTERVAL);
-    return () => clearInterval(interval);
-  }, [fetchVehicles]);
-
-  // 차량 상태 주기적 업데이트
-  useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        const response = await api.get('/api/v1/tracking/status');
-        if (response.data.code === '000' && response.data.data) {
-          setStatus(response.data.data);
-        }
-      } catch (error) {
-        setStatus({ total: 0, running: 0, stolen: 0, stopped: 0 });
-      }
-    };
     fetchStatus();
-    const interval = setInterval(fetchStatus, VEHICLE_REFRESH_INTERVAL);
-    return () => clearInterval(interval);
   }, []);
 
   // 카카오맵 로드 및 마커 표시
@@ -206,6 +292,7 @@ const RealtimeMonitoringPage: React.FC = () => {
 
         const markerImagePath = isStolen ? '/icon/stolenCar.svg' : '/icon/marker.svg';
         const marker = new kakao.maps.Marker({
+          title: vehicle.vehicleId,
           position: new kakao.maps.LatLng(lat, lon),
           image: new kakao.maps.MarkerImage(markerImagePath, new kakao.maps.Size(32, 32), {
             offset: new kakao.maps.Point(16, 32),
@@ -276,8 +363,8 @@ const RealtimeMonitoringPage: React.FC = () => {
       if (kakao && kakao.maps) {
         const lat = Number(vehicle.lat);
         const lon = Number(vehicle.lon);
+        kakaoMapRef.current.setLevel(FOCUSED_ZOOM_LEVEL);
         kakaoMapRef.current.setCenter(new kakao.maps.LatLng(lat, lon));
-        kakaoMapRef.current.setLevel(3);
       }
     }
   }, []);
@@ -287,14 +374,12 @@ const RealtimeMonitoringPage: React.FC = () => {
       <TitleContainer>
         <Text type="heading">실시간 관제</Text>
       </TitleContainer>
-
       <HeaderContainer>
         <StatCard label="전체 차량" count={status.total} unit="대" unitColor="blue" />
         <StatCard label="운행중 차량" count={status.running} unit="대" unitColor="green" />
         <StatCard label="미예약 차량" count={status.stolen} unit="대" unitColor="red" />
         <StatCard label="미운행 차량" count={status.stopped} unit="대" unitColor="yellow" />
       </HeaderContainer>
-
       <ContentContainer>
         <ContentWrap>
           <FilterWrap>
