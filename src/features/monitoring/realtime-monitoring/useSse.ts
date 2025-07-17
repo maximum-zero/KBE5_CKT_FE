@@ -1,38 +1,60 @@
-// src/hooks/useSse.js 또는 src/hooks/useSse.ts
-
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 
 const SSE_URL = import.meta.env.VITE_SSE_URL;
 
-/**
- * SSE (Server-Sent Events) 연결을 위한 커스텀 React 훅
- * @param {string} url - SSE 엔드포인트 URL
- * @param {string} eventName - 구독할 이벤트 이름 (서버에서 SseEmitter.event().name()으로 설정한 이름)
- * @param {function} onMessage - 이벤트 메시지를 받았을 때 실행할 콜백 함수
- */
-export function useSse(eventName, onMessage) {
-  useEffect(() => {
-    // 1. EventSource 객체 생성
-    const eventSource = new EventSource(SSE_URL);
+let sharedEventSource: EventSource | null = null;
+const eventListeners = new Map<string, Set<(data: any) => void>>();
 
-    // 2. 특정 이벤트 이름에 대한 리스너 등록
-    eventSource.addEventListener(eventName, event => {
-      try {
-        const parsedData = JSON.parse(event.data);
-        onMessage(parsedData);
-      } catch (error) {
-        console.error('SSE 데이터 파싱 실패:', error);
+// SSE 이벤트를 파싱하고 등록된 리스너들에게 전달하는 핸들러 생성
+function createHandler(eventName: string) {
+  return (event: MessageEvent) => {
+    try {
+      const data = JSON.parse(event.data);
+      const listeners = eventListeners.get(eventName);
+      if (listeners) {
+        listeners.forEach(cb => cb(data));
       }
-    });
+    } catch (err) {
+      console.error(`[${eventName}] SSE 데이터 파싱 실패:`, err);
+    }
+  };
+}
 
-    // 3. 오류 발생 시
-    eventSource.onerror = error => {
-      console.error('SSE 연결 오류:', error);
-    };
+// SSE 연결 오류 처리
+const commonEventErrorHandler = (error: Event) => {
+  console.error('SSE 연결 오류:', error);
+};
 
-    // 4. 컴포넌트가 언마운트될 때 연결 정리
+export function useSse(eventName: string, onMessage: (data: any) => void) {
+  // onMessage 콜백 함수 메모제이션
+  const memoizedOnMessage = useCallback(onMessage, [onMessage]);
+
+  useEffect(() => {
+    // Event Source 중복 생성 방지 로직
+    if (!sharedEventSource) {
+      sharedEventSource = new EventSource(SSE_URL);
+      sharedEventSource.onerror = commonEventErrorHandler;
+      sharedEventSource.onopen = () => {};
+    }
+
+    // 이벤트 콜백함수 등록(ON, OFF, Update)
+    if (!eventListeners.has(eventName)) {
+      eventListeners.set(eventName, new Set());
+    }
+    eventListeners.get(eventName)!.add(memoizedOnMessage);
+
+    const handler = createHandler(eventName);
+    sharedEventSource.addEventListener(eventName, handler);
+
     return () => {
-      eventSource.close();
+      eventListeners.get(eventName)?.delete(memoizedOnMessage);
+      sharedEventSource?.removeEventListener(eventName, handler);
+
+      if (eventListeners.size === 0 && sharedEventSource) {
+        console.log('All listeners removed, closing SHARED SSE connection.');
+        sharedEventSource.close();
+        sharedEventSource = null;
+      }
     };
-  }, [eventName, onMessage]);
+  }, [eventName, memoizedOnMessage]);
 }
